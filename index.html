@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Adeodato · Rafael Adiosdado Caballero Diéguez · Ciberseguridad</title>
+<meta name="description" content="Rafael Adiosdado Caballero Diéguez — Analista de ciberseguridad (Blue Team / SOC) con trayectoria en el sector industrial IT/OT. Marca Adeodato." />
+<meta name="author" content="Rafael Adiosdado Caballero Diéguez" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Adeodato · Ciberseguridad IT/OT" />
+<meta property="og:description" content="Analista de ciberseguridad (Blue Team / SOC) con puente hacia el mundo industrial OT/ICS." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://adeodato.es" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg:        #0d1418;
+    --bg-raised: #121d22;
+    --line:      #1e2f36;
+    --line-soft: #18272d;
+    --ink:       #e6f0ef;
+    --ink-dim:   #8fa6a6;
+    --ink-mute:  #5f7477;
+    --teal:      #2E9B9B;
+    --teal-br:   #3fc7c2;
+    --teal-deep: #1F6E6E;
+    --amber:     #d9a441;
+    --radius:    4px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', system-ui, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--teal); color: #04100f; }
+
+  a { color: inherit; text-decoration: none; }
+
+  .wrap {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  /* ---------- Console status bar ---------- */
+  .statusbar {
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #0f1a1f 0%, var(--bg) 100%);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--ink-mute);
+  }
+  .statusbar .wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    height: 44px;
+    flex-wrap: wrap;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--teal-br);
+    box-shadow: 0 0 0 0 rgba(63,199,194,.55);
+    animation: pulse 2.6s infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(63,199,194,.5); }
+    70%  { box-shadow: 0 0 0 7px rgba(63,199,194,0); }
+    100% { box-shadow: 0 0 0 0 rgba(63,199,194,0); }
+  }
+  .status-label { color: var(--ink-dim); letter-spacing: .02em; }
+  .status-op { color: var(--teal-br); }
+  .status-right { margin-left: auto; color: var(--ink-mute); }
+  @media (max-width: 560px) { .status-right { display: none; } }
+
+  /* ---------- Hero ---------- */
+  .hero {
+    padding: 92px 0 64px;
+    border-bottom: 1px solid var(--line-soft);
+    position: relative;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+    background-size: 46px 46px;
+    -webkit-mask-image: radial-gradient(circle at 18% 30%, #000 0%, transparent 62%);
+            mask-image: radial-gradient(circle at 18% 30%, #000 0%, transparent 62%);
+    opacity: .5;
+    pointer-events: none;
+  }
+  .hero .wrap { position: relative; }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--teal-br);
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 26px; height: 1px;
+    background: var(--teal);
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 600;
+    font-size: clamp(2.3rem, 6vw, 3.7rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  h1 .accent { color: var(--teal-br); }
+
+  .lede {
+    font-size: clamp(1.02rem, 2.2vw, 1.22rem);
+    color: var(--ink-dim);
+    max-width: 620px;
+    font-weight: 450;
+  }
+  .lede strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Identity line (mono) ---------- */
+  .idline {
+    margin-top: 34px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13.5px;
+    color: var(--ink-mute);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+  .idline span { color: var(--ink-dim); }
+  .idline b { color: var(--teal-br); font-weight: 500; }
+
+  /* ---------- Focus / capabilities ---------- */
+  .section { padding: 68px 0; border-bottom: 1px solid var(--line-soft); }
+  .sec-head {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 32px;
+  }
+  .sec-head b { color: var(--teal); font-weight: 600; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1px;
+    background: var(--line-soft);
+    border: 1px solid var(--line-soft);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .card {
+    background: var(--bg-raised);
+    padding: 26px 24px 28px;
+    transition: background .25s ease;
+  }
+  .card:hover { background: #16242a; }
+  .card .k {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    color: var(--teal-br);
+    letter-spacing: .08em;
+    margin-bottom: 12px;
+  }
+  .card h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.14rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .card p {
+    font-size: 0.93rem;
+    color: var(--ink-dim);
+  }
+
+  /* ---------- Bridge statement ---------- */
+  .bridge { padding: 66px 0; border-bottom: 1px solid var(--line-soft); }
+  .bridge p {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.25rem, 3.2vw, 1.72rem);
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    max-width: 760px;
+  }
+  .bridge .hl { color: var(--teal-br); }
+
+  /* ---------- Links / contact ---------- */
+  .links { padding: 64px 0 20px; }
+  .link-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 4px;
+    border-top: 1px solid var(--line);
+    transition: padding-left .28s cubic-bezier(.2,.7,.3,1), background .28s ease;
+  }
+  .link-row:last-of-type { border-bottom: 1px solid var(--line); }
+  .link-row:hover { padding-left: 16px; background: linear-gradient(90deg, rgba(46,155,155,.08), transparent 60%); }
+  .link-row .name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.2rem, 3vw, 1.55rem);
+    font-weight: 600;
+  }
+  .link-row:hover .name { color: var(--teal-br); }
+  .link-row .meta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--ink-mute);
+    text-align: right;
+    white-space: nowrap;
+  }
+  .arrow { color: var(--teal); transition: transform .28s ease; display: inline-block; }
+  .link-row:hover .arrow { transform: translateX(5px); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 46px 0 60px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-mute);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  footer .brand { color: var(--ink-dim); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+
+  :focus-visible { outline: 2px solid var(--teal-br); outline-offset: 3px; border-radius: 2px; }
+</style>
+</head>
+<body>
+
+  <div class="statusbar">
+    <div class="wrap">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="status-label">system status:</span>
+      <span class="status-op">operational</span>
+      <span class="status-right">adeodato.es · blue team / soc</span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="eyebrow">Adeodato · Ciberseguridad</div>
+      <h1>Rafael Adiosdado<br />Caballero <span class="accent">Diéguez</span></h1>
+      <p class="lede">
+        Analista de ciberseguridad orientado a <strong>Blue Team / SOC</strong>.
+        Defiendo, monitorizo y respondo — con más de 20 años de terreno industrial
+        que me dejan leer los dos lados de una red: <strong>IT y OT</strong>.
+      </p>
+
+      <div class="idline">
+        <span>role:</span><b>SOC Analyst</b>
+        <span>focus:</span><b>Detección &amp; Respuesta</b>
+        <span>base:</span><b>Lucena, Córdoba (ES)</b>
+      </div>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">// <b>Áreas</b> de trabajo</div>
+      <div class="grid">
+        <div class="card">
+          <div class="k">01 — SIEM &amp; DETECCIÓN</div>
+          <h3>Monitorización SOC</h3>
+          <p>Despliegue de SIEM, reglas de detección a medida y pipelines de alerta. Un mini-SOC completo construido desde cero.</p>
+        </div>
+        <div class="card">
+          <div class="k">02 — IT / OT</div>
+          <h3>Puente industrial</h3>
+          <p>Dos décadas en fabricación (CNC, robótica, líneas de producción) aplicadas a la seguridad de entornos OT/ICS.</p>
+        </div>
+        <div class="card">
+          <div class="k">03 — DESARROLLO</div>
+          <h3>Herramientas propias</h3>
+          <p>Filosofía de fabricar, no comprar. Desde control parental por capas hasta apps Android de seguridad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bridge">
+    <div class="wrap">
+      <p>
+        La mayoría de analistas junior vienen del software.
+        Yo vengo de la <span class="hl">planta de producción</span> — donde un fallo
+        no es un ticket, es una máquina parada. Esa mentalidad es la que traigo al SOC.
+      </p>
+    </div>
+  </section>
+
+  <section class="links">
+    <div class="wrap">
+      <div class="sec-head">// <b>Contacto</b> &amp; enlaces</div>
+
+      <a class="link-row" href="tel:+34620553917">
+        <span class="name">Teléfono</span>
+        <span class="meta">+34 620 553 917 <span class="arrow">→</span></span>
+      </a>
+
+      <a class="link-row" href="https://www.linkedin.com/in/rafael-adiosdado-caballero-di%C3%A9guez-16230b372/" target="_blank" rel="noopener">
+        <span class="name">LinkedIn</span>
+        <span class="meta">perfil profesional <span class="arrow">→</span></span>
+      </a>
+
+      <a class="link-row" href="https://github.com/Adeodato-hub" target="_blank" rel="noopener">
+        <span class="name">GitHub</span>
+        <span class="meta">Adeodato-hub · portfolio <span class="arrow">→</span></span>
+      </a>
+
+      <a class="link-row" href="mailto:adiosdado@adeodato.es">
+        <span class="name">Email</span>
+        <span class="meta">adiosdado@adeodato.es <span class="arrow">→</span></span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; padding:0 28px;">
+      <span class="brand">© 2026 Adeodato · Rafael Adiosdado Caballero Diéguez</span>
+      <span>crear / fabricar, no comprar</span>
+    </div>
+  </footer>
+
+</body>
+</html>
