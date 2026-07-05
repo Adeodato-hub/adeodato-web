@@ -7,6 +7,8 @@
 <meta name="description" content="Rafael Adiosdado Caballero Diéguez — Analista de ciberseguridad (Blue Team / SOC) con trayectoria en el sector industrial IT/OT. Marca Adeodato." />
 <meta name="author" content="Rafael Adiosdado Caballero Diéguez" />
 
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 3 L57 13 V32 C57 47 46 57 32 61 C18 57 7 47 7 32 V13 Z' fill='%230d1418' stroke='%233fc7c2' stroke-width='3'/><path d='M22 44 L32 20 L42 44' stroke='%233fc7c2' stroke-width='4' fill='none'/><line x1='26' y1='36' x2='38' y2='36' stroke='%233fc7c2' stroke-width='4'/></svg>" />
+
 <!-- Open Graph -->
 <meta property="og:title" content="Adeodato · Ciberseguridad IT/OT" />
 <meta property="og:description" content="Analista de ciberseguridad (Blue Team / SOC) con puente hacia el mundo industrial OT/ICS." />
@@ -89,6 +91,13 @@
   .status-right { margin-left: auto; color: var(--ink-mute); }
   @media (max-width: 560px) { .status-right { display: none; } }
 
+  /* ---------- Brand logo ---------- */
+  .logo-mark { height: 22px; width: auto; flex-shrink: 0; }
+  .hero .logo-mark { height: 48px; margin-bottom: 20px; display: block; filter: drop-shadow(0 0 14px rgba(63,199,194,.25)); }
+  @media (max-width: 560px) {
+    .hero .logo-mark { height: 34px; margin-bottom: 14px; }
+  }
+
   /* ---------- Hero ---------- */
   .hero {
     padding: 92px 0 64px;
@@ -158,6 +167,26 @@
   }
   .idline span { color: var(--ink-dim); }
   .idline b { color: var(--teal-br); font-weight: 500; }
+
+  /* ---------- Stack chips ---------- */
+  .chip-row {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--ink-dim);
+    transition: border-color .25s ease, color .25s ease;
+  }
+  .chip:hover { border-color: var(--teal); color: var(--teal-br); }
 
   /* ---------- Focus / capabilities ---------- */
   .section { padding: 68px 0; border-bottom: 1px solid var(--line-soft); }
@@ -259,6 +288,16 @@
   }
   footer .brand { color: var(--ink-dim); }
 
+  /* ---------- Entrance animation ---------- */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .hero    { animation: fadeUp .8s ease both; }
+  .section { animation: fadeUp .8s ease .1s both; }
+  .bridge  { animation: fadeUp .8s ease .15s both; }
+  .links   { animation: fadeUp .8s ease .2s both; }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   }
@@ -271,6 +310,13 @@
   <div class="statusbar">
     <div class="wrap">
       <span class="dot" aria-hidden="true"></span>
+      <svg class="logo-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Adeodato">
+        <path d="M32 3 L57 13 V32 C57 47 46 57 32 61 C18 57 7 47 7 32 V13 Z"
+              stroke="#3fc7c2" stroke-width="2.5" fill="rgba(46,155,155,.06)"/>
+        <path d="M22 44 L32 20 L42 44" stroke="#3fc7c2" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <line x1="26.5" y1="36" x2="37.5" y2="36" stroke="#3fc7c2" stroke-width="3" stroke-linecap="round"/>
+      </svg>
       <span class="status-label">system status:</span>
       <span class="status-op">operational</span>
       <span class="status-right">adeodato.es · blue team / soc</span>
@@ -279,6 +325,13 @@
 
   <header class="hero">
     <div class="wrap">
+      <svg class="logo-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Adeodato">
+        <path d="M32 3 L57 13 V32 C57 47 46 57 32 61 C18 57 7 47 7 32 V13 Z"
+              stroke="#3fc7c2" stroke-width="2.5" fill="rgba(46,155,155,.06)"/>
+        <path d="M22 44 L32 20 L42 44" stroke="#3fc7c2" stroke-width="3"
+              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <line x1="26.5" y1="36" x2="37.5" y2="36" stroke="#3fc7c2" stroke-width="3" stroke-linecap="round"/>
+      </svg>
       <div class="eyebrow">Adeodato · Ciberseguridad</div>
       <h1>Rafael Adiosdado<br />Caballero <span class="accent">Diéguez</span></h1>
       <p class="lede">
@@ -291,6 +344,18 @@
         <span>role:</span><b>SOC Analyst</b>
         <span>focus:</span><b>Detección &amp; Respuesta</b>
         <span>base:</span><b>Lucena, Córdoba (ES)</b>
+      </div>
+
+      <div class="chip-row" aria-label="Stack tecnológico">
+        <span class="chip">SIEM</span>
+        <span class="chip">Detección</span>
+        <span class="chip">Splunk/ELK</span>
+        <span class="chip">OT/ICS</span>
+        <span class="chip">Modbus</span>
+        <span class="chip">Android/Kotlin</span>
+        <span class="chip">Bash</span>
+        <span class="chip">Redes</span>
+        <span class="chip">Blue Team</span>
       </div>
     </div>
   </header>
@@ -313,6 +378,29 @@
           <div class="k">03 — DESARROLLO</div>
           <h3>Herramientas propias</h3>
           <p>Filosofía de fabricar, no comprar. Desde control parental por capas hasta apps Android de seguridad.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">// <b>Proyectos</b> propios</div>
+      <div class="grid">
+        <a class="card" href="https://github.com/Adeodato-hub" target="_blank" rel="noopener">
+          <div class="k">01 — ANDROID / SEGURIDAD</div>
+          <h3>AdeoShield</h3>
+          <p>App Android de seguridad y control parental por capas: Device Admin + AccessibilityService, con protección anti-desinstalación. <span style="color:var(--teal-br)">GitHub →</span></p>
+        </a>
+        <div class="card">
+          <div class="k">02 — SIEM &amp; DETECCIÓN</div>
+          <h3>Mini-SOC casero</h3>
+          <p>SIEM desplegado desde cero, con reglas de detección propias y pipeline de alertas.</p>
+        </div>
+        <div class="card">
+          <div class="k">03 — IT / OT</div>
+          <h3>Herramientas OT</h3>
+          <p>Utilidades puente IT/OT nacidas de 20 años en planta: CNC, robótica, líneas de producción.</p>
         </div>
       </div>
     </div>
