@@ -4,16 +4,16 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Adeodato · Rafael Adiosdado Caballero Diéguez · Ciberseguridad</title>
-<meta name="description" content="Rafael Adiosdado Caballero Diéguez — Analista de ciberseguridad (Blue Team / SOC) con trayectoria en el sector industrial IT/OT. Marca Adeodato." />
+<meta name="description" content="Rafael Adiosdado Caballero Diéguez — RACD Ciberseguridad. Analista especializado en SOC (Blue Team), con Red Team, desarrollo de aplicaciones y trayectoria industrial IT/OT. Marca Adeodato." />
 <meta name="author" content="Rafael Adiosdado Caballero Diéguez" />
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 3 L57 13 V32 C57 47 46 57 32 61 C18 57 7 47 7 32 V13 Z' fill='%230d1418' stroke='%233fc7c2' stroke-width='3'/><path d='M22 44 L32 20 L42 44' stroke='%233fc7c2' stroke-width='4' fill='none'/><line x1='26' y1='36' x2='38' y2='36' stroke='%233fc7c2' stroke-width='4'/></svg>" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 3 L57 13 V32 C57 47 46 57 32 61 C18 57 7 47 7 32 V13 Z' fill='%230e161c' stroke='%234d9de0' stroke-width='3'/><path d='M22 44 L32 20 L42 44' stroke='%23ef6a3d' stroke-width='4' fill='none'/><line x1='26' y1='36' x2='38' y2='36' stroke='%234d9de0' stroke-width='4'/></svg>" />
 
-<!-- Open Graph -->
-<meta property="og:title" content="Adeodato · Ciberseguridad IT/OT" />
-<meta property="og:description" content="Analista de ciberseguridad (Blue Team / SOC) con puente hacia el mundo industrial OT/ICS." />
+<meta property="og:title" content="Adeodato · RACD Ciberseguridad" />
+<meta property="og:description" content="Especializado en SOC (Blue Team), con Red Team y desarrollo de aplicaciones. Puente hacia el mundo industrial OT/ICS." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://adeodato.es" />
+<meta property="og:image" content="https://adeodato.es/logo.png" />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -21,288 +21,84 @@
 
 <style>
   :root {
-    --bg:        #0d1418;
-    --bg-raised: #121d22;
-    --line:      #1e2f36;
-    --line-soft: #18272d;
-    --ink:       #e6f0ef;
-    --ink-dim:   #8fa6a6;
-    --ink-mute:  #5f7477;
-    --teal:      #2E9B9B;
-    --teal-br:   #3fc7c2;
-    --teal-deep: #1F6E6E;
-    --amber:     #d9a441;
-    --radius:    4px;
+    --bg:        #0b1218;
+    --bg-raised: #141f28;
+    --bg-soft:   #101a22;
+    --line:      #223240;
+    --line-soft: #1a2731;
+    --ink:       #e9f1f6;
+    --ink-dim:   #9db0bd;
+    --ink-mute:  #6a7d8b;
+    --blue:      #4d9de0;
+    --blue-deep: #2f6fb0;
+    --red:       #ef6a3d;
+    --red-deep:  #cf4a23;
+    --steel:     #7d90a0;
+    --radius:    5px;
   }
-
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: 'Inter', system-ui, sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    overflow-x: hidden;
-  }
-
-  ::selection { background: var(--teal); color: #04100f; }
-
+  body { background: var(--bg); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow-x: hidden; }
+  ::selection { background: var(--blue); color: #051019; }
   a { color: inherit; text-decoration: none; }
-
-  .wrap {
-    max-width: 940px;
-    margin: 0 auto;
-    padding: 0 28px;
-  }
-
-  /* ---------- Console status bar ---------- */
-  .statusbar {
-    border-bottom: 1px solid var(--line);
-    background: linear-gradient(180deg, #0f1a1f 0%, var(--bg) 100%);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
-    color: var(--ink-mute);
-  }
-  .statusbar .wrap {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    height: 44px;
-    flex-wrap: wrap;
-  }
-  .dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: var(--teal-br);
-    box-shadow: 0 0 0 0 rgba(63,199,194,.55);
-    animation: pulse 2.6s infinite;
-    flex-shrink: 0;
-  }
-  @keyframes pulse {
-    0%   { box-shadow: 0 0 0 0 rgba(63,199,194,.5); }
-    70%  { box-shadow: 0 0 0 7px rgba(63,199,194,0); }
-    100% { box-shadow: 0 0 0 0 rgba(63,199,194,0); }
-  }
-  .status-label { color: var(--ink-dim); letter-spacing: .02em; }
-  .status-op { color: var(--teal-br); }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+  .statusbar { border-bottom: 1px solid var(--line); background: linear-gradient(180deg, #0e1922 0%, var(--bg) 100%); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-mute); }
+  .statusbar .wrap { display: flex; align-items: center; gap: 12px; height: 46px; flex-wrap: wrap; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #34d17e; box-shadow: 0 0 0 0 rgba(52,209,126,.5); animation: pulse 2.6s infinite; flex-shrink: 0; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(52,209,126,.45); } 70% { box-shadow: 0 0 0 7px rgba(52,209,126,0); } 100% { box-shadow: 0 0 0 0 rgba(52,209,126,0); } }
+  .status-label { color: var(--ink-dim); }
+  .status-op { color: #34d17e; font-weight: 500; }
   .status-right { margin-left: auto; color: var(--ink-mute); }
   @media (max-width: 560px) { .status-right { display: none; } }
-
-  /* ---------- Brand logo ---------- */
-  .logo-mark { height: 22px; width: auto; flex-shrink: 0; }
-  .hero .logo-mark { height: 48px; margin-bottom: 20px; display: block; filter: drop-shadow(0 0 14px rgba(63,199,194,.25)); }
-  @media (max-width: 560px) {
-    .hero .logo-mark { height: 34px; margin-bottom: 14px; }
-  }
-
-  /* ---------- Hero ---------- */
-  .hero {
-    padding: 92px 0 64px;
-    border-bottom: 1px solid var(--line-soft);
-    position: relative;
-  }
-  .hero::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(var(--line-soft) 1px, transparent 1px),
-      linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
-    background-size: 46px 46px;
-    -webkit-mask-image: radial-gradient(circle at 18% 30%, #000 0%, transparent 62%);
-            mask-image: radial-gradient(circle at 18% 30%, #000 0%, transparent 62%);
-    opacity: .5;
-    pointer-events: none;
-  }
+  .hero { padding: 60px 0 56px; text-align: center; border-bottom: 1px solid var(--line-soft); position: relative; }
+  .hero::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--line-soft) 1px, transparent 1px), linear-gradient(90deg, var(--line-soft) 1px, transparent 1px); background-size: 46px 46px; -webkit-mask-image: radial-gradient(circle at 50% 22%, #000 0%, transparent 60%); mask-image: radial-gradient(circle at 50% 22%, #000 0%, transparent 60%); opacity: .5; pointer-events: none; }
   .hero .wrap { position: relative; }
-
-  .eyebrow {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    color: var(--teal-br);
-    margin-bottom: 22px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .eyebrow::before {
-    content: "";
-    width: 26px; height: 1px;
-    background: var(--teal);
-    display: inline-block;
-  }
-
-  h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-weight: 600;
-    font-size: clamp(2.3rem, 6vw, 3.7rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin-bottom: 20px;
-  }
-  h1 .accent { color: var(--teal-br); }
-
-  .lede {
-    font-size: clamp(1.02rem, 2.2vw, 1.22rem);
-    color: var(--ink-dim);
-    max-width: 620px;
-    font-weight: 450;
-  }
+  .emblem { display: block; width: 100%; max-width: 540px; height: auto; margin: 0 auto 32px; border-radius: 16px; box-shadow: 0 20px 50px -18px rgba(0,0,0,.7), 0 0 0 1px rgba(77,157,224,.12); }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--steel); margin-bottom: 18px; display: inline-flex; align-items: center; gap: 8px; }
+  .eyebrow b { color: var(--blue); font-weight: 600; }
+  .eyebrow i { color: var(--red); font-style: normal; font-weight: 600; }
+  h1 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(2.1rem, 5.5vw, 3.4rem); line-height: 1.06; letter-spacing: -0.02em; margin-bottom: 18px; color: var(--ink); }
+  .lede { font-size: clamp(1.02rem, 2.2vw, 1.2rem); color: var(--ink-dim); max-width: 660px; margin: 0 auto; font-weight: 450; }
   .lede strong { color: var(--ink); font-weight: 600; }
-
-  /* ---------- Identity line (mono) ---------- */
-  .idline {
-    margin-top: 34px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13.5px;
-    color: var(--ink-mute);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 18px;
-  }
+  .lede .b { color: var(--blue); font-weight: 600; }
+  .lede .r { color: var(--red); font-weight: 600; }
+  .idline { margin-top: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-mute); display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; }
   .idline span { color: var(--ink-dim); }
-  .idline b { color: var(--teal-br); font-weight: 500; }
-
-  /* ---------- Stack chips ---------- */
-  .chip-row {
-    margin-top: 30px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 6px 12px;
-    border: 1px solid var(--line);
-    border-radius: 3px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
-    color: var(--ink-dim);
-    transition: border-color .25s ease, color .25s ease;
-  }
-  .chip:hover { border-color: var(--teal); color: var(--teal-br); }
-
-  /* ---------- Focus / capabilities ---------- */
-  .section { padding: 68px 0; border-bottom: 1px solid var(--line-soft); }
-  .sec-head {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--ink-mute);
-    margin-bottom: 32px;
-  }
-  .sec-head b { color: var(--teal); font-weight: 600; }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1px;
-    background: var(--line-soft);
-    border: 1px solid var(--line-soft);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .card {
-    background: var(--bg-raised);
-    padding: 26px 24px 28px;
-    transition: background .25s ease;
-  }
-  .card:hover { background: #16242a; }
-  .card .k {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11.5px;
-    color: var(--teal-br);
-    letter-spacing: .08em;
-    margin-bottom: 12px;
-  }
-  .card h3 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.14rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    letter-spacing: -0.01em;
-  }
-  .card p {
-    font-size: 0.93rem;
-    color: var(--ink-dim);
-  }
-
-  /* ---------- Bridge statement ---------- */
-  .bridge { padding: 66px 0; border-bottom: 1px solid var(--line-soft); }
-  .bridge p {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(1.25rem, 3.2vw, 1.72rem);
-    font-weight: 500;
-    line-height: 1.4;
-    letter-spacing: -0.01em;
-    max-width: 760px;
-  }
-  .bridge .hl { color: var(--teal-br); }
-
-  /* ---------- Links / contact ---------- */
-  .links { padding: 64px 0 20px; }
-  .link-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 20px;
-    padding: 22px 4px;
-    border-top: 1px solid var(--line);
-    transition: padding-left .28s cubic-bezier(.2,.7,.3,1), background .28s ease;
-  }
+  .idline b { color: var(--blue); font-weight: 500; }
+  .chip-row { margin-top: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+  .chip { display: inline-flex; align-items: center; padding: 6px 13px; border: 1px solid var(--line); background: var(--bg-raised); border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-dim); transition: border-color .2s ease, color .2s ease; }
+  .chip:hover { border-color: var(--blue); color: var(--blue); }
+  .section { padding: 62px 0; border-bottom: 1px solid var(--line-soft); }
+  .sec-head { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 30px; }
+  .sec-head b { color: var(--blue); font-weight: 600; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+  .card { background: var(--bg-raised); border: 1px solid var(--line); padding: 24px 22px 26px; border-radius: 12px; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -16px rgba(0,0,0,.6); border-color: #2c4152; }
+  .card .k { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--blue); letter-spacing: .06em; margin-bottom: 12px; }
+  .card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.16rem; font-weight: 600; margin-bottom: 8px; }
+  .card p { font-size: 0.94rem; color: var(--ink-dim); }
+  a.card h3 { color: var(--blue); }
+  .bridge { padding: 62px 0; border-bottom: 1px solid var(--line-soft); }
+  .bridge p { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.2rem, 3vw, 1.68rem); font-weight: 500; line-height: 1.42; letter-spacing: -0.01em; max-width: 780px; }
+  .bridge .hl { color: var(--red); }
+  .links { padding: 60px 0 20px; }
+  .link-row { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 20px 6px; border-top: 1px solid var(--line); transition: padding-left .25s cubic-bezier(.2,.7,.3,1), background .25s ease; }
   .link-row:last-of-type { border-bottom: 1px solid var(--line); }
-  .link-row:hover { padding-left: 16px; background: linear-gradient(90deg, rgba(46,155,155,.08), transparent 60%); }
-  .link-row .name {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: clamp(1.2rem, 3vw, 1.55rem);
-    font-weight: 600;
-  }
-  .link-row:hover .name { color: var(--teal-br); }
-  .link-row .meta {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
-    color: var(--ink-mute);
-    text-align: right;
-    white-space: nowrap;
-  }
-  .arrow { color: var(--teal); transition: transform .28s ease; display: inline-block; }
+  .link-row:hover { padding-left: 16px; background: linear-gradient(90deg, rgba(77,157,224,.1), transparent 60%); }
+  .link-row .name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 3vw, 1.5rem); font-weight: 600; }
+  .link-row:hover .name { color: var(--blue); }
+  .link-row .meta { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-mute); text-align: right; white-space: nowrap; }
+  .arrow { color: var(--blue); transition: transform .25s ease; display: inline-block; }
   .link-row:hover .arrow { transform: translateX(5px); }
-
-  /* ---------- Footer ---------- */
-  footer {
-    padding: 46px 0 60px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-mute);
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
+  footer { padding: 44px 0 60px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-mute); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
   footer .brand { color: var(--ink-dim); }
-
-  /* ---------- Entrance animation ---------- */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  .hero    { animation: fadeUp .8s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .hero { animation: fadeUp .8s ease both; }
   .section { animation: fadeUp .8s ease .1s both; }
-  .bridge  { animation: fadeUp .8s ease .15s both; }
-  .links   { animation: fadeUp .8s ease .2s both; }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
-  }
-
-  :focus-visible { outline: 2px solid var(--teal-br); outline-offset: 3px; border-radius: 2px; }
+  .bridge { animation: fadeUp .8s ease .15s both; }
+  .links { animation: fadeUp .8s ease .2s both; }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 2px; }
 </style>
 </head>
 <body>
@@ -310,52 +106,36 @@
   <div class="statusbar">
     <div class="wrap">
       <span class="dot" aria-hidden="true"></span>
-      <svg class="logo-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Adeodato">
-        <path d="M32 3 L57 13 V32 C57 47 46 57 32 61 C18 57 7 47 7 32 V13 Z"
-              stroke="#3fc7c2" stroke-width="2.5" fill="rgba(46,155,155,.06)"/>
-        <path d="M22 44 L32 20 L42 44" stroke="#3fc7c2" stroke-width="3"
-              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <line x1="26.5" y1="36" x2="37.5" y2="36" stroke="#3fc7c2" stroke-width="3" stroke-linecap="round"/>
-      </svg>
       <span class="status-label">system status:</span>
       <span class="status-op">operational</span>
-      <span class="status-right">adeodato.es · blue team / soc</span>
+      <span class="status-right">adeodato.es · soc · blue team</span>
     </div>
   </div>
 
   <header class="hero">
     <div class="wrap">
-      <svg class="logo-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Adeodato">
-        <path d="M32 3 L57 13 V32 C57 47 46 57 32 61 C18 57 7 47 7 32 V13 Z"
-              stroke="#3fc7c2" stroke-width="2.5" fill="rgba(46,155,155,.06)"/>
-        <path d="M22 44 L32 20 L42 44" stroke="#3fc7c2" stroke-width="3"
-              stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <line x1="26.5" y1="36" x2="37.5" y2="36" stroke="#3fc7c2" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-      <div class="eyebrow">Adeodato · Ciberseguridad</div>
-      <h1>Rafael Adiosdado<br />Caballero <span class="accent">Diéguez</span></h1>
+      <img class="emblem" src="logo.png" alt="Adeodato — RACD Ciberseguridad · Blue Team & Red Team" />
+      <div class="eyebrow"><b>RACD</b> · Ciberseguridad · <i>Adeodato</i></div>
+      <h1>Rafael Adiosdado<br />Caballero Diéguez</h1>
       <p class="lede">
-        Analista de ciberseguridad orientado a <strong>Blue Team / SOC</strong>.
-        Defiendo, monitorizo y respondo — con más de 20 años de terreno industrial
-        que me dejan leer los dos lados de una red: <strong>IT y OT</strong>.
+        Analista de ciberseguridad <span class="b">especializado en SOC</span> (Blue Team),
+        con desarrollo de aplicaciones y <span class="r">Red Team</span> ofensivo.
+        Más de 20 años de terreno industrial me dejan leer los dos lados de una red: <strong>IT y OT</strong>.
       </p>
-
       <div class="idline">
         <span>role:</span><b>SOC Analyst</b>
-        <span>focus:</span><b>Detección &amp; Respuesta</b>
+        <span>focus:</span><b>Detección, SIEM &amp; Respuesta</b>
         <span>base:</span><b>Lucena, Córdoba (ES)</b>
       </div>
-
-      <div class="chip-row" aria-label="Stack tecnológico">
-        <span class="chip">SIEM</span>
+      <div class="chip-row" aria-label="Stack técnico">
+        <span class="chip">SOC</span>
+        <span class="chip">SIEM · Wazuh</span>
+        <span class="chip">SOAR</span>
         <span class="chip">Detección</span>
-        <span class="chip">Splunk/ELK</span>
         <span class="chip">OT/ICS</span>
-        <span class="chip">Modbus</span>
+        <span class="chip">Desarrollo de apps</span>
         <span class="chip">Android/Kotlin</span>
         <span class="chip">Bash</span>
-        <span class="chip">Redes</span>
-        <span class="chip">Blue Team</span>
       </div>
     </div>
   </header>
@@ -365,19 +145,19 @@
       <div class="sec-head">// <b>Áreas</b> de trabajo</div>
       <div class="grid">
         <div class="card">
-          <div class="k">01 — SIEM &amp; DETECCIÓN</div>
+          <div class="k">01 — SOC · SIEM &amp; DETECCIÓN</div>
           <h3>Monitorización SOC</h3>
-          <p>Despliegue de SIEM, reglas de detección a medida y pipelines de alerta. Un mini-SOC completo construido desde cero.</p>
+          <p>Despliegue de SIEM (Wazuh), reglas de detección a medida, respuesta automática (SOAR) y triaje con IA local. Un SOC completo construido desde cero.</p>
         </div>
         <div class="card">
-          <div class="k">02 — IT / OT</div>
+          <div class="k">02 — DESARROLLO DE APLICACIONES</div>
+          <h3>Creación de apps</h3>
+          <p>Desarrollo de aplicaciones Android de seguridad de principio a fin: diseño, código en Kotlin, firma de APK y despliegue. Filosofía de fabricar, no comprar.</p>
+        </div>
+        <div class="card">
+          <div class="k">03 — IT / OT</div>
           <h3>Puente industrial</h3>
           <p>Dos décadas en fabricación (CNC, robótica, líneas de producción) aplicadas a la seguridad de entornos OT/ICS.</p>
-        </div>
-        <div class="card">
-          <div class="k">03 — DESARROLLO</div>
-          <h3>Herramientas propias</h3>
-          <p>Filosofía de fabricar, no comprar. Desde control parental por capas hasta apps Android de seguridad.</p>
         </div>
       </div>
     </div>
@@ -387,16 +167,16 @@
     <div class="wrap">
       <div class="sec-head">// <b>Proyectos</b> propios</div>
       <div class="grid">
-        <a class="card" href="https://github.com/Adeodato-hub" target="_blank" rel="noopener">
-          <div class="k">01 — ANDROID / SEGURIDAD</div>
-          <h3>AdeoShield</h3>
-          <p>App Android de seguridad y control parental por capas: Device Admin + AccessibilityService, con protección anti-desinstalación. <span style="color:var(--teal-br)">GitHub →</span></p>
-        </a>
         <div class="card">
-          <div class="k">02 — SIEM &amp; DETECCIÓN</div>
-          <h3>Mini-SOC casero</h3>
-          <p>SIEM desplegado desde cero, con reglas de detección propias y pipeline de alertas.</p>
+          <div class="k">01 — SOC · WAZUH · SOAR</div>
+          <h3>Proyecto ARGOS</h3>
+          <p>SOC funcional sobre Wazuh: detección SIEM, respuesta automática (SOAR) y triaje de alertas con IA local (Ollama). Cubre el ciclo completo de operaciones de seguridad.</p>
         </div>
+        <a class="card" href="https://github.com/Adeodato-hub" target="_blank" rel="noopener">
+          <div class="k">02 — ANDROID · SEGURIDAD</div>
+          <h3>AdeoShield</h3>
+          <p>App Android todo-en-uno de control parental: filtrado DNS-over-HTTPS, bloqueo de apps y Ajustes con PIN y protección anti-desinstalación. Sin root. <span style="color:var(--blue)">GitHub →</span></p>
+        </a>
         <div class="card">
           <div class="k">03 — IT / OT</div>
           <h3>Herramientas OT</h3>
@@ -419,22 +199,18 @@
   <section class="links">
     <div class="wrap">
       <div class="sec-head">// <b>Contacto</b> &amp; enlaces</div>
-
       <a class="link-row" href="tel:+34620553917">
         <span class="name">Teléfono</span>
         <span class="meta">+34 620 553 917 <span class="arrow">→</span></span>
       </a>
-
       <a class="link-row" href="https://www.linkedin.com/in/rafael-adiosdado-caballero-di%C3%A9guez-16230b372/" target="_blank" rel="noopener">
         <span class="name">LinkedIn</span>
         <span class="meta">perfil profesional <span class="arrow">→</span></span>
       </a>
-
       <a class="link-row" href="https://github.com/Adeodato-hub" target="_blank" rel="noopener">
         <span class="name">GitHub</span>
         <span class="meta">Adeodato-hub · portfolio <span class="arrow">→</span></span>
       </a>
-
       <a class="link-row" href="mailto:adiosdado@adeodato.es">
         <span class="name">Email</span>
         <span class="meta">adiosdado@adeodato.es <span class="arrow">→</span></span>
@@ -444,7 +220,7 @@
 
   <footer>
     <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; padding:0 28px;">
-      <span class="brand">© 2026 Adeodato · Rafael Adiosdado Caballero Diéguez</span>
+      <span class="brand">© 2026 Adeodato · RACD · Rafael Adiosdado Caballero Diéguez</span>
       <span>crear / fabricar, no comprar</span>
     </div>
   </footer>
