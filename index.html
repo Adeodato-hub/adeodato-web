@@ -1,240 +1,565 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Adeodato · Rafael Adiosdado Caballero Diéguez · Ciberseguridad</title>
-<meta name="description" content="Rafael Adiosdado Caballero Diéguez — RACD Ciberseguridad. Analista especializado en SOC (Blue Team), con Red Team, desarrollo de aplicaciones y trayectoria industrial IT/OT. Marca Adeodato." />
-<meta name="author" content="Rafael Adiosdado Caballero Diéguez" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adeodato | Ciberseguridad, vSOC IT-OT & Android Security</title>
+  <meta name="description" content="Portfolio profesional de Adeodato. Especialista en Ciberseguridad, arquitectura de vSOC gestionado (IT/OT), desarrollo móvil de seguridad en Android (Kotlin) y herramientas CTI en Python.">
+  <meta name="keywords" content="Adeodato, Ciberseguridad, vSOC, Wazuh, Shuffle, DFIR-IRIS, AdeoSOC, AdeoShield, ARGOS, Kotlin, Python, Tailscale, DoH">
+  <meta name="author" content="Adeodato">
 
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 3 L57 13 V32 C57 47 46 57 32 61 C18 57 7 47 7 32 V13 Z' fill='%230e161c' stroke='%234d9de0' stroke-width='3'/><path d='M22 44 L32 20 L42 44' stroke='%23ef6a3d' stroke-width='4' fill='none'/><line x1='26' y1='36' x2='38' y2='36' stroke='%234d9de0' stroke-width='4'/></svg>" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://avatars.githubusercontent.com/u/298353282?v=4">
 
-<meta property="og:title" content="Adeodato · RACD Ciberseguridad" />
-<meta property="og:description" content="Especializado en SOC (Blue Team), con Red Team y desarrollo de aplicaciones. Puente hacia el mundo industrial OT/ICS." />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://adeodato.es" />
-<meta property="og:image" content="https://adeodato.es/logo.png" />
+  <!-- Open Graph / Social Media -->
+  <meta property="og:title" content="Adeodato | Ciberseguridad, vSOC IT-OT & Android Security">
+  <meta property="og:description" content="Especialista en Ciberseguridad, arquitectura vSOC (Wazuh, Shuffle, DFIR-IRIS) y apps de privacidad en Android.">
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/298353282?v=4">
+  <meta property="og:type" content="website">
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;450;500;600&display=swap" rel="stylesheet" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-  :root {
-    --bg:        #0b1218;
-    --bg-raised: #141f28;
-    --bg-soft:   #101a22;
-    --line:      #223240;
-    --line-soft: #1a2731;
-    --ink:       #e9f1f6;
-    --ink-dim:   #9db0bd;
-    --ink-mute:  #6a7d8b;
-    --blue:      #4d9de0;
-    --blue-deep: #2f6fb0;
-    --red:       #ef6a3d;
-    --red-deep:  #cf4a23;
-    --steel:     #7d90a0;
-    --radius:    5px;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { background: var(--bg); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow-x: hidden; }
-  ::selection { background: var(--blue); color: #051019; }
-  a { color: inherit; text-decoration: none; }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
-  .statusbar { border-bottom: 1px solid var(--line); background: linear-gradient(180deg, #0e1922 0%, var(--bg) 100%); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-mute); }
-  .statusbar .wrap { display: flex; align-items: center; gap: 12px; height: 46px; flex-wrap: wrap; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: #34d17e; box-shadow: 0 0 0 0 rgba(52,209,126,.5); animation: pulse 2.6s infinite; flex-shrink: 0; }
-  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(52,209,126,.45); } 70% { box-shadow: 0 0 0 7px rgba(52,209,126,0); } 100% { box-shadow: 0 0 0 0 rgba(52,209,126,0); } }
-  .status-label { color: var(--ink-dim); }
-  .status-op { color: #34d17e; font-weight: 500; }
-  .status-right { margin-left: auto; color: var(--ink-mute); }
-  @media (max-width: 560px) { .status-right { display: none; } }
-  .hero { padding: 60px 0 56px; text-align: center; border-bottom: 1px solid var(--line-soft); position: relative; }
-  .hero::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(var(--line-soft) 1px, transparent 1px), linear-gradient(90deg, var(--line-soft) 1px, transparent 1px); background-size: 46px 46px; -webkit-mask-image: radial-gradient(circle at 50% 22%, #000 0%, transparent 60%); mask-image: radial-gradient(circle at 50% 22%, #000 0%, transparent 60%); opacity: .5; pointer-events: none; }
-  .hero .wrap { position: relative; }
-  .emblem { display: block; width: 100%; max-width: 540px; height: auto; margin: 0 auto 32px; border-radius: 16px; box-shadow: 0 20px 50px -18px rgba(0,0,0,.7), 0 0 0 1px rgba(77,157,224,.12); }
-  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--steel); margin-bottom: 18px; display: inline-flex; align-items: center; gap: 8px; }
-  .eyebrow b { color: var(--blue); font-weight: 600; }
-  .eyebrow i { color: var(--red); font-style: normal; font-weight: 600; }
-  h1 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: clamp(2.1rem, 5.5vw, 3.4rem); line-height: 1.06; letter-spacing: -0.02em; margin-bottom: 18px; color: var(--ink); }
-  .lede { font-size: clamp(1.02rem, 2.2vw, 1.2rem); color: var(--ink-dim); max-width: 660px; margin: 0 auto; font-weight: 450; }
-  .lede strong { color: var(--ink); font-weight: 600; }
-  .lede .b { color: var(--blue); font-weight: 600; }
-  .lede .r { color: var(--red); font-weight: 600; }
-  .idline { margin-top: 30px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-mute); display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 20px; }
-  .idline span { color: var(--ink-dim); }
-  .idline b { color: var(--blue); font-weight: 500; }
-  .chip-row { margin-top: 28px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-  .chip { display: inline-flex; align-items: center; padding: 6px 13px; border: 1px solid var(--line); background: var(--bg-raised); border-radius: 999px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-dim); transition: border-color .2s ease, color .2s ease; }
-  .chip:hover { border-color: var(--blue); color: var(--blue); }
-  .section { padding: 62px 0; border-bottom: 1px solid var(--line-soft); }
-  .sec-head { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-mute); margin-bottom: 30px; }
-  .sec-head b { color: var(--blue); font-weight: 600; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
-  .card { background: var(--bg-raised); border: 1px solid var(--line); padding: 24px 22px 26px; border-radius: 12px; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
-  .card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -16px rgba(0,0,0,.6); border-color: #2c4152; }
-  .card .k { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--blue); letter-spacing: .06em; margin-bottom: 12px; }
-  .card h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.16rem; font-weight: 600; margin-bottom: 8px; }
-  .card p { font-size: 0.94rem; color: var(--ink-dim); }
-  a.card h3 { color: var(--blue); }
-  .bridge { padding: 62px 0; border-bottom: 1px solid var(--line-soft); }
-  .bridge p { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.2rem, 3vw, 1.68rem); font-weight: 500; line-height: 1.42; letter-spacing: -0.01em; max-width: 780px; }
-  .bridge .hl { color: var(--red); }
-  .links { padding: 60px 0 20px; }
-  .link-row { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 20px 6px; border-top: 1px solid var(--line); transition: padding-left .25s cubic-bezier(.2,.7,.3,1), background .25s ease; }
-  .link-row:last-of-type { border-bottom: 1px solid var(--line); }
-  .link-row:hover { padding-left: 16px; background: linear-gradient(90deg, rgba(77,157,224,.1), transparent 60%); }
-  .link-row .name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 3vw, 1.5rem); font-weight: 600; }
-  .link-row:hover .name { color: var(--blue); }
-  .link-row .meta { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-mute); text-align: right; white-space: nowrap; }
-  .arrow { color: var(--blue); transition: transform .25s ease; display: inline-block; }
-  .link-row:hover .arrow { transform: translateX(5px); }
-  footer { padding: 44px 0 60px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-mute); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
-  footer .brand { color: var(--ink-dim); }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-  .hero { animation: fadeUp .8s ease both; }
-  .section { animation: fadeUp .8s ease .1s both; }
-  .bridge { animation: fadeUp .8s ease .15s both; }
-  .links { animation: fadeUp .8s ease .2s both; }
-  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
-  :focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 2px; }
-</style>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-  <div class="statusbar">
-    <div class="wrap">
-      <span class="dot" aria-hidden="true"></span>
-      <span class="status-label">system status:</span>
-      <span class="status-op">operational</span>
-      <span class="status-right">adeodato.es · soc · blue team</span>
+  <!-- Dynamic Cyber Background Canvas -->
+  <canvas id="cyber-canvas"></canvas>
+  <div class="scanline-overlay"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <a href="#" class="brand-logo">
+        <div class="logo-avatar-wrapper">
+          <!-- User Profile Avatar/Logo -->
+          <img src="logo.png" alt="Adeodato Logo" class="logo-avatar">
+          <span class="logo-status-dot" title="vSOC System Active"></span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Adeodato</span>
+          <span class="brand-subtitle">Cybersecurity & vSOC</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#proyectos" class="nav-link">Proyectos</a></li>
+        <li><a href="#terminal" class="nav-link">Terminal vSOC</a></li>
+        <li><a href="#skills" class="nav-link">Competencias</a></li>
+        <li><a href="#contacto" class="nav-link">Contacto</a></li>
+      </ul>
+
+      <a href="https://github.com/Adeodato-hub" target="_blank" class="btn btn-primary mono" id="github-header-btn">
+        <i class="fa-brands fa-github"></i> GitHub
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span>
+          <span>vSOC IT/OT Active • Android Security Dev</span>
+        </div>
+        <h1 class="hero-title">
+          Orquestación de <span class="text-gradient">Ciberseguridad</span> & Desarrollo Táctico
+        </h1>
+        <p class="hero-subtitle">
+          Diseño e implemento soluciones de seguridad gestionada (vSOC IT/OT), contención automatizada de amenazas y aplicaciones móviles Android enfocadas en la privacidad y protección de red.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#proyectos" class="btn btn-primary">
+            <i class="fa-solid fa-shield-halved"></i> Explorar Proyectos
+          </a>
+          <a href="#terminal" class="btn btn-outline mono">
+            <i class="fa-solid fa-terminal"></i> Probar Terminal vSOC
+          </a>
+        </div>
+      </div>
+
+      <!-- Cyber Metrics Card -->
+      <div class="hero-radar-card">
+        <div class="radar-header">
+          <span class="radar-title mono"><i class="fa-solid fa-chart-line"></i> Telemetría vSOC en Vivo</span>
+          <span class="pulse-dot"></span>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-item">
+            <div class="metric-val text-gradient" data-target="128" data-suffix="+">0</div>
+            <div class="metric-label">Endpoints Monitoreados</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-val text-gradient-purple" data-target="99" data-suffix=".9%">0</div>
+            <div class="metric-label">Uptime Operativo</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-val text-gradient" data-target="100" data-suffix="%">0</div>
+            <div class="metric-label">Automatización SOAR</div>
+          </div>
+          <div class="metric-item">
+            <div class="metric-val text-gradient-purple" data-target="6" data-suffix="">0</div>
+            <div class="metric-label">Repositorios Públicos</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS SECTION -->
+  <section class="section" id="proyectos">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag mono">[ REPOSITORIOS & DESARROLLOS ]</span>
+        <h2 class="section-title">Ecosistema de Proyectos</h2>
+        <p class="section-desc">
+          Soluciones de arquitectura vSOC, aplicaciones de seguridad nativas en Android y herramientas de automatización. Haz clic en <b>Inspeccionar Arquitectura</b> para ver los diagramas tácticos.
+        </p>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="project-filters">
+        <button class="filter-btn active" data-filter="all">Todos los Proyectos</button>
+        <button class="filter-btn" data-filter="vsoc">vSOC / Ciberseguridad</button>
+        <button class="filter-btn" data-filter="android">Apps Android (Kotlin)</button>
+        <button class="filter-btn" data-filter="python">Python & CTI</button>
+      </div>
+
+      <!-- Projects Grid -->
+      <div class="projects-grid">
+
+        <!-- Project 1: SOC-Adeodato -->
+        <article class="project-card" data-category="vsoc">
+          <div class="project-header">
+            <div class="project-icon-badge">
+              <i class="fa-solid fa-server"></i>
+            </div>
+            <span class="project-type-tag">vSOC / IT-OT</span>
+          </div>
+          <h3 class="project-title">SOC-Adeodato</h3>
+          <p class="project-desc">
+            Solución vSOC (SOC gestionado) IT-OT para PYME e industria. Detección en tiempo real con Wazuh, contención automática con Shuffle, investigación en DFIR-IRIS y malla de red segura con Tailscale.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Wazuh</span>
+            <span class="tag">Shuffle SOAR</span>
+            <span class="tag">DFIR-IRIS</span>
+            <span class="tag">Tailscale</span>
+          </div>
+          <div class="project-footer">
+            <button class="btn btn-primary btn-inspect mono" data-project="soc-adeodato">
+              <i class="fa-solid fa-network-wired"></i> Inspeccionar Arquitectura
+            </button>
+            <a href="https://github.com/Adeodato-hub/SOC-Adeodato" target="_blank" class="project-link">
+              GitHub <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- Project 2: AdeoSOC -->
+        <article class="project-card" data-category="android vsoc">
+          <div class="project-header">
+            <div class="project-icon-badge">
+              <i class="fa-solid fa-mobile-screen-button"></i>
+            </div>
+            <span class="project-type-tag">Android App</span>
+          </div>
+          <h3 class="project-title">AdeoSOC</h3>
+          <p class="project-desc">
+            Aplicación móvil nativa en Kotlin para la gestión y recepción de alertas prioritarias del vSOC. Permite contención remota y monitoreo en tiempo real desde dispositivos móviles.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Kotlin</span>
+            <span class="tag">Android SDK</span>
+            <span class="tag">Push Notifications</span>
+            <span class="tag">vSOC Mobile</span>
+          </div>
+          <div class="project-footer">
+            <button class="btn btn-primary btn-inspect mono" data-project="adeosoc">
+              <i class="fa-solid fa-network-wired"></i> Inspeccionar Arquitectura
+            </button>
+            <a href="https://github.com/Adeodato-hub/AdeoSOC" target="_blank" class="project-link">
+              GitHub <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- Project 3: AdeoShield -->
+        <article class="project-card" data-category="android">
+          <div class="project-header">
+            <div class="project-icon-badge">
+              <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <span class="project-type-tag">Android / DoH</span>
+          </div>
+          <h3 class="project-title">AdeoShield</h3>
+          <p class="project-desc">
+            Sistema de control parental y filtrado de contenido para Android basado en DNS-over-HTTPS (DoH). Protege la navegación cifrando consultas y bloqueando dominios maliciosos o no deseados.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Kotlin</span>
+            <span class="tag">DNS-over-HTTPS</span>
+            <span class="tag">Android Security</span>
+            <span class="tag">GPL-3.0</span>
+          </div>
+          <div class="project-footer">
+            <button class="btn btn-primary btn-inspect mono" data-project="adeoshield">
+              <i class="fa-solid fa-network-wired"></i> Inspeccionar Arquitectura
+            </button>
+            <a href="https://github.com/Adeodato-hub/AdeoShield" target="_blank" class="project-link">
+              GitHub <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- Project 4: ARGOS -->
+        <article class="project-card" data-category="python">
+          <div class="project-header">
+            <div class="project-icon-badge">
+              <i class="fa-solid fa-eye"></i>
+            </div>
+            <span class="project-type-tag">Python Tool</span>
+          </div>
+          <h3 class="project-title">ARGOS</h3>
+          <p class="project-desc">
+            Herramienta en Python orientada a la inteligencia de amenazas (CTI) y automatización de recolección de indicadores de compromiso (IoCs) para fortalecer la postura defensiva del SOC.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Python 3</span>
+            <span class="tag">CTI</span>
+            <span class="tag">Automation</span>
+            <span class="tag">GPL-3.0</span>
+          </div>
+          <div class="project-footer">
+            <button class="btn btn-primary btn-inspect mono" data-project="argos">
+              <i class="fa-solid fa-network-wired"></i> Inspeccionar Arquitectura
+            </button>
+            <a href="https://github.com/Adeodato-hub/ARGOS" target="_blank" class="project-link">
+              GitHub <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </article>
+
+        <!-- Project 5: adeodato-web -->
+        <article class="project-card" data-category="vsoc">
+          <div class="project-header">
+            <div class="project-icon-badge">
+              <i class="fa-solid fa-globe"></i>
+            </div>
+            <span class="project-type-tag">Web Portfolio</span>
+          </div>
+          <h3 class="project-title">adeodato-web</h3>
+          <p class="project-desc">
+            Sitio web personal y portal interactivo (adeodato.es) diseñado con arquitectura moderna, simulación de terminal vSOC en tiempo real y visualizador interactivo de arquitectura.
+          </p>
+          <div class="project-tags">
+            <span class="tag">HTML5</span>
+            <span class="tag">CSS3 Glassmorphism</span>
+            <span class="tag">JavaScript Canvas</span>
+          </div>
+          <div class="project-footer">
+            <button class="btn btn-primary btn-inspect mono" data-project="adeodato-web">
+              <i class="fa-solid fa-network-wired"></i> Inspeccionar Arquitectura
+            </button>
+            <a href="https://github.com/Adeodato-hub/adeodato-web" target="_blank" class="project-link">
+              GitHub <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE TERMINAL SECTION -->
+  <section class="section" id="terminal">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag mono">[ CONSOLA DE COMANDOS INTERACTIVA ]</span>
+        <h2 class="section-title">Terminal de Simulación vSOC</h2>
+        <p class="section-desc">
+          Interactúa con la consola para comprobar el estado de los sistemas o simular la contención de una amenaza en tiempo real.
+        </p>
+      </div>
+
+      <div class="terminal-wrapper">
+        <div class="terminal-header">
+          <div class="terminal-controls">
+            <span class="control-btn close"></span>
+            <span class="control-btn minimize"></span>
+            <span class="control-btn maximize"></span>
+          </div>
+          <div class="terminal-title">adeodato@soc-core:~ (bash)</div>
+          <div><i class="fa-solid fa-terminal" style="color: var(--primary-cyan);"></i></div>
+        </div>
+
+        <div class="terminal-body" id="terminal-body">
+          <!-- Terminal output lines injected via JavaScript -->
+        </div>
+
+        <div class="preset-cmds">
+          <span style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); align-self: center;">Comandos rápidos:</span>
+          <button class="preset-btn" data-cmd="status">status</button>
+          <button class="preset-btn" data-cmd="simulate-attack">simulate-attack</button>
+          <button class="preset-btn" data-cmd="projects">projects</button>
+          <button class="preset-btn" data-cmd="skills">skills</button>
+          <button class="preset-btn" data-cmd="help">help</button>
+          <button class="preset-btn" data-cmd="clear">clear</button>
+        </div>
+
+        <div style="padding: 0.8rem 1.5rem; background: #030508; border-top: 1px solid var(--glass-border);">
+          <div class="command-input-container">
+            <span class="prompt-symbol">adeodato@soc-core</span>:<span class="path-symbol">~</span>$&nbsp;
+            <input type="text" id="terminal-input" class="terminal-input" placeholder="Escribe un comando y presiona Enter..." autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS MATRIX SECTION -->
+  <section class="section" id="skills">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag mono">[ ARCHITECTURAL STACK ]</span>
+        <h2 class="section-title">Competencias Técnicas</h2>
+        <p class="section-desc">
+          Tecnologías y herramientas que utilizo para construir infraestructuras seguras y aplicaciones móviles.
+        </p>
+      </div>
+
+      <div class="skills-grid">
+        <!-- Skill Group 1 -->
+        <div class="skill-card">
+          <div class="skill-card-header">
+            <i class="fa-solid fa-shield-virus skill-icon"></i>
+            <h3 class="skill-card-title">Ciberseguridad & SOC</h3>
+          </div>
+          <ul class="skill-list">
+            <li>
+              <div class="skill-item-header">
+                <span>SIEM / EDR (Wazuh)</span>
+                <span class="mono" style="color: var(--accent-green);">95%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 95%;"></div></div>
+            </li>
+            <li>
+              <div class="skill-item-header">
+                <span>Orquestación SOAR (Shuffle)</span>
+                <span class="mono" style="color: var(--accent-green);">90%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 90%;"></div></div>
+            </li>
+            <li>
+              <div class="skill-item-header">
+                <span>Gestión de Incidentes (DFIR-IRIS)</span>
+                <span class="mono" style="color: var(--accent-green);">88%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 88%;"></div></div>
+            </li>
+            <li>
+              <div class="skill-item-header">
+                <span>Redes Overlay & VPN (Tailscale)</span>
+                <span class="mono" style="color: var(--accent-green);">92%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 92%;"></div></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Skill Group 2 -->
+        <div class="skill-card">
+          <div class="skill-card-header">
+            <i class="fa-brands fa-android skill-icon"></i>
+            <h3 class="skill-card-title">Desarrollo Móvil (Android)</h3>
+          </div>
+          <ul class="skill-list">
+            <li>
+              <div class="skill-item-header">
+                <span>Kotlin / Android SDK</span>
+                <span class="mono" style="color: var(--primary-cyan);">90%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 90%;"></div></div>
+            </li>
+            <li>
+              <div class="skill-item-header">
+                <span>DNS-over-HTTPS (DoH Filtering)</span>
+                <span class="mono" style="color: var(--primary-cyan);">95%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 95%;"></div></div>
+            </li>
+            <li>
+              <div class="skill-item-header">
+                <span>Seguridad & Cifrado en Apps</span>
+                <span class="mono" style="color: var(--primary-cyan);">85%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 85%;"></div></div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Skill Group 3 -->
+        <div class="skill-card">
+          <div class="skill-card-header">
+            <i class="fa-solid fa-code skill-icon"></i>
+            <h3 class="skill-card-title">Scripting & Web</h3>
+          </div>
+          <ul class="skill-list">
+            <li>
+              <div class="skill-item-header">
+                <span>Python 3 (CTI & Automation)</span>
+                <span class="mono" style="color: var(--accent-purple);">92%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 92%;"></div></div>
+            </li>
+            <li>
+              <div class="skill-item-header">
+                <span>Bash / Linux Administration</span>
+                <span class="mono" style="color: var(--accent-purple);">88%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 88%;"></div></div>
+            </li>
+            <li>
+              <div class="skill-item-header">
+                <span>HTML5 / Modern CSS / JS</span>
+                <span class="mono" style="color: var(--accent-purple);">90%</span>
+              </div>
+              <div class="skill-bar"><div class="skill-progress" style="width: 90%;"></div></div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section class="section" id="contacto">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag mono">[ CANAL DE COMUNICACIÓN ]</span>
+        <h2 class="section-title">Contacto Seguro</h2>
+        <p class="section-desc">
+          ¿Interesado en colaborar en proyectos de Ciberseguridad, integración vSOC o desarrollo Android?
+        </p>
+      </div>
+
+      <div style="max-width: 600px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-cyber); padding: 2.5rem; border-radius: 16px; backdrop-filter: blur(12px);">
+        <form onsubmit="event.preventDefault(); alert('Transmisión enviada correctamente.');">
+          <div style="margin-bottom: 1.2rem;">
+            <label class="mono" style="display: block; font-size: 0.85rem; color: var(--primary-cyan); margin-bottom: 0.4rem;">NOMBRE / ENTIDAD</label>
+            <input type="text" required placeholder="Tu nombre o empresa" style="width: 100%; padding: 0.8rem; background: rgba(7, 10, 15, 0.8); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; outline: none; font-family: var(--font-sans);">
+          </div>
+          <div style="margin-bottom: 1.2rem;">
+            <label class="mono" style="display: block; font-size: 0.85rem; color: var(--primary-cyan); margin-bottom: 0.4rem;">CORREO ELECTRÓNICO</label>
+            <input type="email" required placeholder="tuemail@dominio.com" style="width: 100%; padding: 0.8rem; background: rgba(7, 10, 15, 0.8); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; outline: none; font-family: var(--font-sans);">
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <label class="mono" style="display: block; font-size: 0.85rem; color: var(--primary-cyan); margin-bottom: 0.4rem;">MENSAJE</label>
+            <textarea rows="4" required placeholder="Detalles de tu consulta..." style="width: 100%; padding: 0.8rem; background: rgba(7, 10, 15, 0.8); border: 1px solid var(--glass-border); border-radius: 8px; color: #fff; outline: none; font-family: var(--font-sans);"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
+            <i class="fa-solid fa-paper-plane"></i> Enviar Mensaje Encriptado
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARCHITECTURE INSPECTION MODAL -->
+  <div class="modal-overlay" id="project-modal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+
+      <span class="project-type-tag mono" id="modal-category">vSOC / IT-OT</span>
+      <h2 style="font-size: 1.8rem; margin: 0.5rem 0 1rem;" id="modal-title">Título del Proyecto</h2>
+      <p style="color: var(--text-muted); font-size: 1rem; margin-bottom: 1.5rem;" id="modal-desc">Descripción...</p>
+
+      <!-- Architecture Visualizer -->
+      <div class="arch-visualizer">
+        <div class="arch-flow-title">
+          <i class="fa-solid fa-diagram-project"></i> Diagrama de Flujo de Datos / Arquitectura
+        </div>
+        <div class="arch-nodes-container" id="modal-flow-nodes">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem;">
+        <h4 class="mono" style="color: var(--primary-cyan); font-size: 0.95rem; margin-bottom: 0.8rem;">Ficha Técnica & Especificaciones</h4>
+        <ul id="modal-specs-list" style="list-style: none; color: var(--text-muted); font-size: 0.92rem;">
+          <!-- Injected dynamically -->
+        </ul>
+      </div>
+
+      <div class="modal-actions">
+        <a href="#" target="_blank" class="btn btn-primary" id="modal-github-link">
+          <i class="fa-brands fa-github"></i> Abrir en GitHub
+        </a>
+        <button class="btn btn-outline mono" id="modal-sim-btn">
+          <i class="fa-solid fa-terminal"></i> Simular en Terminal vSOC
+        </button>
+      </div>
     </div>
   </div>
 
-  <header class="hero">
-    <div class="wrap">
-      <img class="emblem" src="logo.png" alt="Adeodato — RACD Ciberseguridad · Blue Team & Red Team" />
-      <div class="eyebrow"><b>RACD</b> · Ciberseguridad · <i>Adeodato</i></div>
-      <h1>Rafael Adiosdado<br />Caballero Diéguez</h1>
-      <p class="lede">
-        Analista de ciberseguridad <span class="b">especializado en SOC</span> (Blue Team),
-        con desarrollo de aplicaciones y <span class="r">Red Team</span> ofensivo.
-        Más de 20 años de terreno industrial me dejan leer los dos lados de una red: <strong>IT y OT</strong>.
-      </p>
-      <div class="idline">
-        <span>role:</span><b>SOC Analyst</b>
-        <span>focus:</span><b>Detección, SIEM &amp; Respuesta</b>
-        <span>base:</span><b>Lucena, Córdoba (ES)</b>
-      </div>
-      <div class="chip-row" aria-label="Stack técnico">
-        <span class="chip">SOC</span>
-        <span class="chip">SIEM · Wazuh</span>
-        <span class="chip">SOAR</span>
-        <span class="chip">Detección</span>
-        <span class="chip">OT/ICS</span>
-        <span class="chip">Desarrollo de apps</span>
-        <span class="chip">Android/Kotlin</span>
-        <span class="chip">Bash</span>
-      </div>
-    </div>
-  </header>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="brand-logo">
+            <div class="logo-avatar-wrapper">
+              <img src="logo.png" alt="Adeodato Logo" class="logo-avatar">
+            </div>
+            <div class="brand-text">
+              <span class="brand-title">Adeodato</span>
+              <span class="brand-subtitle">adeodato.es</span>
+            </div>
+          </a>
+          <p class="footer-desc">
+            Orquestación de ciberseguridad defensiva, desarrollo de vSOC gestionado e ingeniería de software orientada a la privacidad.
+          </p>
+        </div>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head">// <b>Áreas</b> de trabajo</div>
-      <div class="grid">
-        <div class="card">
-          <div class="k">01 — SOC · SIEM &amp; DETECCIÓN</div>
-          <h3>Monitorización SOC</h3>
-          <p>Despliegue de SIEM (Wazuh), reglas de detección a medida, respuesta automática (SOAR) y triaje con IA local. Un SOC completo construido desde cero.</p>
+        <div>
+          <h4 class="footer-heading">Navegación</h4>
+          <ul class="footer-links">
+            <li><a href="#hero" class="footer-link">Inicio</a></li>
+            <li><a href="#proyectos" class="footer-link">Proyectos</a></li>
+            <li><a href="#terminal" class="footer-link">Terminal vSOC</a></li>
+            <li><a href="#skills" class="footer-link">Competencias</a></li>
+          </ul>
         </div>
-        <div class="card">
-          <div class="k">02 — DESARROLLO DE APLICACIONES</div>
-          <h3>Creación de apps</h3>
-          <p>Desarrollo de aplicaciones Android de seguridad de principio a fin: diseño, código en Kotlin, firma de APK y despliegue. Filosofía de fabricar, no comprar.</p>
-        </div>
-        <div class="card">
-          <div class="k">03 — IT / OT</div>
-          <h3>Puente industrial</h3>
-          <p>Dos décadas en fabricación (CNC, robótica, líneas de producción) aplicadas a la seguridad de entornos OT/ICS.</p>
+
+        <div>
+          <h4 class="footer-heading">Conectar</h4>
+          <ul class="footer-links">
+            <li><a href="https://github.com/Adeodato-hub" target="_blank" class="footer-link"><i class="fa-brands fa-github"></i> GitHub (@Adeodato-hub)</a></li>
+            <li><a href="https://adeodato.es" target="_blank" class="footer-link"><i class="fa-solid fa-globe"></i> Web (adeodato.es)</a></li>
+          </ul>
         </div>
       </div>
-    </div>
-  </section>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="sec-head">// <b>Proyectos</b> propios</div>
-      <div class="grid">
-        <a class="card" href="https://github.com/Adeodato-hub/ARGOS" target="_blank" rel="noopener">
-          <div class="k">01 — SOC · WAZUH · SOAR</div>
-          <h3>Proyecto ARGOS</h3>
-          <p>SOC funcional sobre Wazuh: detección SIEM, respuesta automática (SOAR) y triaje de alertas con IA local (Ollama). Cubre el ciclo completo de operaciones de seguridad. <span style="color:var(--blue)">GitHub →</span></p>
-        </a>
-        <a class="card" href="https://github.com/Adeodato-hub" target="_blank" rel="noopener">
-          <div class="k">02 — ANDROID · SEGURIDAD</div>
-          <h3>AdeoShield</h3>
-          <p>App Android todo-en-uno de control parental: filtrado DNS-over-HTTPS, bloqueo de apps y Ajustes con PIN y protección anti-desinstalación. Sin root. <span style="color:var(--blue)">GitHub →</span></p>
-        </a>
-        <div class="card">
-          <div class="k">03 — IT / OT</div>
-          <h3>Herramientas OT</h3>
-          <p>Utilidades puente IT/OT nacidas de 20 años en planta: CNC, robótica, líneas de producción.</p>
-        </div>
-        <a class="card" href="https://github.com/Adeodato-hub/AdeoSOC" target="_blank" rel="noopener">
-          <div class="k">04 — ANDROID · SOC MÓVIL</div>
-          <svg viewBox="0 0 48 48" width="34" height="34" style="margin-bottom:10px" aria-hidden="true">
-            <rect x="2" y="2" width="44" height="44" rx="11" fill="#0e1922" stroke="#223240"/>
-            <circle cx="24" cy="24" r="14" fill="none" stroke="#4d9de0" stroke-width="2.5"/>
-            <circle cx="24" cy="24" r="8" fill="none" stroke="#4d9de0" stroke-width="2.5"/>
-            <circle cx="24" cy="24" r="3" fill="#4d9de0"/>
-          </svg>
-          <h3>AdeoSOC</h3>
-          <p>SOC de bolsillo: app Android (Kotlin) que muestra en tiempo casi real las alertas de mi SOC Wazuh (ARGOS) — panel, semáforo por severidad y notificaciones. <span style="color:var(--blue)">GitHub →</span></p>
-        </a>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Adeodato. Todos los derechos reservados. Diseñado con tecnología Cyber-Tactical.</p>
       </div>
-    </div>
-  </section>
-
-  <section class="bridge">
-    <div class="wrap">
-      <p>
-        La mayoría de analistas junior vienen del software.
-        Yo vengo de la <span class="hl">planta de producción</span> — donde un fallo
-        no es un ticket, es una máquina parada. Esa mentalidad es la que traigo al SOC.
-      </p>
-    </div>
-  </section>
-
-  <section class="links">
-    <div class="wrap">
-      <div class="sec-head">// <b>Contacto</b> &amp; enlaces</div>
-      <a class="link-row" href="tel:+34620553917">
-        <span class="name">Teléfono</span>
-        <span class="meta">+34 620 553 917 <span class="arrow">→</span></span>
-      </a>
-      <a class="link-row" href="https://www.linkedin.com/in/rafael-adiosdado-caballero-di%C3%A9guez-16230b372/" target="_blank" rel="noopener">
-        <span class="name">LinkedIn</span>
-        <span class="meta">perfil profesional <span class="arrow">→</span></span>
-      </a>
-      <a class="link-row" href="https://github.com/Adeodato-hub" target="_blank" rel="noopener">
-        <span class="name">GitHub</span>
-        <span class="meta">Adeodato-hub · portfolio <span class="arrow">→</span></span>
-      </a>
-      <a class="link-row" href="mailto:adiosdado@adeodato.es">
-        <span class="name">Email</span>
-        <span class="meta">adiosdado@adeodato.es <span class="arrow">→</span></span>
-      </a>
-    </div>
-  </section>
-
-  <footer>
-    <div class="wrap" style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px; padding:0 28px;">
-      <span class="brand">© 2026 Adeodato · RACD · Rafael Adiosdado Caballero Diéguez</span>
-      <span>crear / fabricar, no comprar</span>
     </div>
   </footer>
 
+  <!-- JavaScript Scripts -->
+  <script src="js/background.js"></script>
+  <script src="js/terminal.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
