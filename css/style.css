@@ -61,6 +61,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   z-index: -2;
   pointer-events: none;
 }
@@ -71,6 +72,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background: linear-gradient(
     rgba(18, 16, 16, 0) 50%, 
     rgba(0, 0, 0, 0.25) 50%
@@ -601,6 +603,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   height: clamp(500px, calc(100vh - 300px), 590px);
+  height: clamp(500px, calc(100dvh - 300px), 590px);
 }
 
 /* ADEOSOC SIMULATOR SECTION */
@@ -622,6 +625,7 @@ h1, h2, h3, h4, h5, h6 {
 .simulator-scale {
   width: 360px;
   height: clamp(500px, calc(100vh - 300px), 590px);
+  height: clamp(500px, calc(100dvh - 300px), 590px);
   overflow: hidden;
 }
 
@@ -875,6 +879,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   background: rgba(4, 7, 12, 0.85);
   backdrop-filter: blur(16px);
   z-index: 2000;
