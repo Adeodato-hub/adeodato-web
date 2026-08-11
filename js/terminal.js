@@ -74,6 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (trimmed === 'clear') {
       terminalBody.innerHTML = '';
       appendWelcomeMessage();
+      notifyAdeoSOCSimulator('ADEO_RESET');
       return;
     }
 
@@ -94,6 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function runAttackSimulation() {
+    notifyAdeoSOCSimulator();
+
     const steps = [
       { delay: 300, text: `<span style="color:#ffb703;">[ALERT] 🚨 Ingesta de evento no sospechoso desde Agente Wazuh #042 (Host: OT-PLC-GATEWAY)</span>` },
       { delay: 800, text: `<span style="color:#00f3ff;">[SOAR]  ⚡ Workflow 'Shuffle-Containment' activado automáticamente.</span>` },
@@ -134,6 +137,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Expose processCommand to window for modal integration
   window.processCommand = processCommand;
+
+  // Cross-simulator sync: notify embedded AdeoSOC HUD when an attack is simulated
+  function notifyAdeoSOCSimulator(type) {
+    const simFrame = document.querySelector('.simulator-scale iframe');
+    if (simFrame && simFrame.contentWindow) {
+      simFrame.contentWindow.postMessage({ type: type || 'ADEO_TRIGGER_ALERT' }, '*');
+    }
+  }
+
+  // Receive events from the embedded AdeoSOC HUD and reflect them in the terminal
+  window.addEventListener('message', (e) => {
+    const msg = e.data;
+    if (!msg || typeof msg !== 'object') return;
+
+    if (msg.type === 'ADEO_ALERT_INGESTED') {
+      appendLine(`<span style="color:#ffb703;">[PUSH]  📱 AdeoSOC HUD: nueva alerta crítica ${msg.alertId} detectada (${msg.threatType}).</span>`);
+    } else if (msg.type === 'ADEO_CONTAINMENT') {
+      const color = msg.action === 'ISOLATE_HOST' ? 'var(--accent-green)' : 'var(--primary-cyan)';
+      appendLine(`<span style="color:${color};">[IR]    🛡️ Acción ${msg.action} ejecutada desde AdeoSOC HUD en ${msg.ms}ms.</span>`);
+      appendLine(`<span style="color:var(--text-muted);">        ${msg.details}</span>`);
+    }
+  });
 
   // Init welcome
   appendWelcomeMessage();

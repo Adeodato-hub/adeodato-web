@@ -279,28 +279,6 @@
       opacity: 0.8;
     }
 
-    /* Trigger New Alert Box */
-    .trigger-box {
-      text-align: center;
-    }
-
-    .btn-trigger {
-      width: 100%;
-      padding: 0.65rem;
-      background: rgba(157, 78, 221, 0.12);
-      border: 1px solid var(--accent-purple);
-      color: var(--accent-purple);
-      border-radius: 10px;
-      font-size: 0.78rem;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .btn-trigger:hover {
-      background: var(--accent-purple);
-      color: #fff;
-    }
-
     /* Execution Banner */
     .execution-banner {
       background: rgba(0, 255, 157, 0.12);
@@ -479,13 +457,6 @@
         </div>
       </section>
 
-      <!-- Trigger New Incident Test Control -->
-      <div class="trigger-box">
-        <button class="btn-trigger mono" onclick="triggerNewAlert()">
-          <i class="fa-solid fa-bolt"></i> Simular Nueva Alerta Entrante (Push)
-        </button>
-      </div>
-
       <!-- Execution Feedback Banner -->
       <div class="execution-banner" id="execution-banner" style="display: none;">
         <div class="exec-icon"><i class="fa-solid fa-circle-check"></i></div>
@@ -567,19 +538,42 @@
     document.addEventListener('DOMContentLoaded', () => {
       renderAlert();
       renderLogs();
+
+      window.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'ADEO_TRIGGER_ALERT') {
+          triggerNewAlert();
+        } else if (e.data && e.data.type === 'ADEO_RESET') {
+          resetAlert();
+        }
+      });
     });
 
     function renderAlert() {
-      document.getElementById('alert-id').innerText = currentAlert.alert_id;
+      const cardElem = document.getElementById('alert-card');
+      const statusElem = document.getElementById('threat-status');
+      const badge = document.querySelector('#alert-card .badge-critical');
+
+      if (currentAlert.status === 'CLEARED') {
+        badge.innerHTML = '<i class="fa-solid fa-shield-halved"></i> SISTEMA NORMAL <span id="alert-id" style="display:none;"></span>';
+        document.getElementById('alert-time').innerText = currentAlert.timestamp;
+        document.getElementById('threat-name').innerText = 'SISTEMA NORMAL · SIN ALERTAS ACTIVAS';
+        document.getElementById('threat-mitre').innerText = 'Estado de vigilancia vSOC en curso.';
+        document.getElementById('threat-ip').innerText = '---';
+        document.getElementById('threat-host').innerText = '---';
+        document.getElementById('threat-risk').innerText = '0 / 100';
+        statusElem.innerText = 'SIN ALERTAS ACTIVAS';
+        statusElem.style.color = 'var(--accent-green)';
+        cardElem.style.borderColor = 'var(--accent-green)';
+        return;
+      }
+
+      badge.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ALERTA CRÍTICA #<span id="alert-id">${currentAlert.alert_id}</span>`;
       document.getElementById('alert-time').innerText = currentAlert.timestamp;
       document.getElementById('threat-name').innerText = currentAlert.threat_type;
       document.getElementById('threat-mitre').innerText = `MITRE ATT&CK: ${currentAlert.mitre_technique}`;
       document.getElementById('threat-ip').innerText = currentAlert.source_ip;
       document.getElementById('threat-host').innerText = currentAlert.target_host;
       document.getElementById('threat-risk').innerText = `${currentAlert.risk_score} / 100`;
-
-      const statusElem = document.getElementById('threat-status');
-      const cardElem = document.getElementById('alert-card');
 
       if (currentAlert.status === 'CONTAINED_ISOLATED') {
         statusElem.innerText = 'HOST AISLADO (CONTENIDO)';
@@ -594,6 +588,22 @@
         statusElem.style.color = 'var(--accent-alert)';
         cardElem.style.borderColor = 'rgba(255, 0, 85, 0.4)';
       }
+    }
+
+    function resetAlert() {
+      currentAlert = {
+        alert_id: "---",
+        severity: "CLEARED",
+        source_ip: "---",
+        target_host: "---",
+        threat_type: "SISTEMA NORMAL",
+        mitre_technique: "Vigilancia activa",
+        risk_score: 0,
+        timestamp: new Date().toLocaleTimeString(),
+        status: "CLEARED"
+      };
+      document.getElementById('execution-banner').style.display = 'none';
+      renderAlert();
     }
 
     function executeContainment(type) {
@@ -625,6 +635,10 @@
       renderLogs();
 
       showBanner(actionName, detailsMsg, ms);
+
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'ADEO_CONTAINMENT', action: actionName, details: detailsMsg, ms: ms }, '*');
+      }
     }
 
     function showBanner(action, msg, ms) {
@@ -657,6 +671,10 @@
 
       document.getElementById('execution-banner').style.display = 'none';
       renderAlert();
+
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'ADEO_ALERT_INGESTED', alertId: currentAlert.alert_id, threatType: currentAlert.threat_type }, '*');
+      }
     }
 
     function renderLogs() {

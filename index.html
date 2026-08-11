@@ -38,11 +38,6 @@
   <nav class="navbar" id="navbar">
     <div class="container navbar-inner">
       <a href="#" class="brand-logo">
-        <div class="logo-avatar-wrapper">
-          <!-- User Profile Avatar/Logo -->
-          <img src="logo.png" alt="Adeodato Logo" class="logo-avatar">
-          <span class="logo-status-dot" title="vSOC System Active"></span>
-        </div>
         <div class="brand-text">
           <span class="brand-title">Rafael Adiosdado</span>
           <span class="brand-subtitle">RACD · Cyber & vSOC</span>
@@ -51,6 +46,7 @@
 
       <ul class="nav-links">
         <li><a href="#proyectos" class="nav-link">Proyectos</a></li>
+        <li><a href="#simulador" class="nav-link">Simulador</a></li>
         <li><a href="#terminal" class="nav-link">Terminal vSOC</a></li>
         <li><a href="#skills" class="nav-link">Competencias</a></li>
         <li><a href="#contacto" class="nav-link">Contacto</a></li>
@@ -72,6 +68,7 @@
   <section class="hero" id="hero">
     <div class="container hero-grid">
       <div class="hero-content">
+        <img src="logo.png" alt="Adeodato Logo" class="hero-logo">
         <div class="hero-badge">
           <span class="pulse-dot"></span>
           <span>RACD • vSOC IT/OT Active • Blue Team & Security Dev</span>
@@ -293,6 +290,7 @@
 
   <!-- INTERACTIVE TERMINAL SECTION -->
   <section class="section" id="terminal">
+    <span id="simulador" class="anchor-offset"></span>
     <div class="container">
       <div class="section-header">
         <span class="section-tag mono">[ CONSOLA DE COMANDOS INTERACTIVA ]</span>
@@ -302,7 +300,8 @@
         </p>
       </div>
 
-      <div class="terminal-wrapper">
+      <div class="dual-sim-grid">
+        <div class="terminal-wrapper">
         <div class="terminal-header">
           <div class="terminal-controls">
             <span class="control-btn close"></span>
@@ -332,6 +331,14 @@
             <span class="prompt-symbol">adeodato@soc-core</span>:<span class="path-symbol">~</span>$&nbsp;
             <input type="text" id="terminal-input" class="terminal-input" placeholder="Escribe un comando y presiona Enter..." autocomplete="off">
           </div>
+        </div>
+        </div>
+
+        <div class="simulator-embed">
+          <div class="simulator-scale">
+            <iframe src="AdeoSOC_Simulador_1Tap.html" title="AdeoSOC Simulador 1-Tap" loading="lazy"></iframe>
+          </div>
+          <div class="simulator-caption">AdeoSOC · HUD 1-Tap</div>
         </div>
       </div>
     </div>
