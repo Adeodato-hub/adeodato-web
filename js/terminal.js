@@ -160,6 +160,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Auto-fit the embedded AdeoSOC HUD so both simulators render fully on screen
+  const simScaleBox = document.querySelector('.simulator-scale');
+  const simFrame = document.querySelector('.simulator-scale iframe');
+  function fitSimulator() {
+    if (!simScaleBox || !simFrame) return;
+    const availW = simScaleBox.clientWidth;
+    const availH = simScaleBox.clientHeight;
+    let natW = 480;
+    let natH = 840;
+    try {
+      const doc = simFrame.contentDocument;
+      if (doc && doc.body) {
+        const sim = doc.querySelector('.simulator-container');
+        if (sim) {
+          const bodyStyle = getComputedStyle(doc.body);
+          natW = 480;
+          natH = sim.offsetHeight
+            + parseFloat(bodyStyle.paddingTop)
+            + parseFloat(bodyStyle.paddingBottom);
+        }
+      }
+    } catch (err) { /* same-origin only; CSS fallback applies otherwise */ }
+    simFrame.style.width = natW + 'px';
+    simFrame.style.height = natH + 'px';
+    simFrame.style.transform = 'scale(' + Math.min(availW / natW, availH / natH) + ')';
+  }
+  if (simFrame) {
+    simFrame.addEventListener('load', fitSimulator);
+    window.addEventListener('resize', fitSimulator);
+  }
+
   // Init welcome
   appendWelcomeMessage();
 });

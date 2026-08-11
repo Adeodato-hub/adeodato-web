@@ -600,7 +600,7 @@ h1, h2, h3, h4, h5, h6 {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: 630px;
+  height: clamp(500px, calc(100vh - 300px), 590px);
 }
 
 /* ADEOSOC SIMULATOR SECTION */
@@ -621,8 +621,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .simulator-scale {
   width: 360px;
-  height: 630px;
-  overflow: visible;
+  height: clamp(500px, calc(100vh - 300px), 590px);
+  overflow: hidden;
 }
 
 .simulator-scale iframe {
