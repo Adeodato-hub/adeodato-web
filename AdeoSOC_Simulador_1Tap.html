@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AdeoSOC | Simulador Táctico de Contención 1-Tap</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #070a0f;
+      --bg-card: rgba(14, 20, 31, 0.9);
+      --bg-card-hover: rgba(22, 32, 50, 0.95);
+      --primary-cyan: #00f3ff;
+      --accent-green: #00ff9d;
+      --accent-alert: #ff0055;
+      --accent-warning: #ffb703;
+      --accent-purple: #9d4edd;
+      --text-main: #f0f4f8;
+      --text-muted: #8b9bb4;
+      --border-cyber: rgba(0, 243, 255, 0.25);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --font-sans: 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem 1rem;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+    }
+
+    .simulator-container {
+      width: 100%;
+      max-width: 480px;
+      background: #090e17;
+      border: 1px solid var(--border-cyber);
+      box-shadow: 0 20px 60px rgba(0, 243, 255, 0.2);
+      border-radius: 24px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 820px;
+    }
+
+    /* Header */
+    .app-header {
+      padding: 1.5rem 1.5rem 1rem;
+      background: rgba(14, 20, 31, 0.95);
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+
+    .brand-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      color: var(--primary-cyan);
+      background: rgba(0, 243, 255, 0.08);
+      padding: 0.25rem 0.65rem;
+      border-radius: 20px;
+      border: 1px solid var(--border-cyber);
+    }
+
+    .status-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(0.95); opacity: 1; }
+    }
+
+    .api-status {
+      font-size: 0.72rem;
+      color: var(--accent-green);
+    }
+
+    .app-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .app-subtitle {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    /* Body */
+    .app-body {
+      padding: 1.2rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      overflow-y: auto;
+    }
+
+    /* Alert Card */
+    .alert-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 0, 85, 0.4);
+      border-radius: 16px;
+      padding: 1.2rem;
+      box-shadow: 0 8px 25px rgba(255, 0, 85, 0.15);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .alert-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .badge-critical {
+      background: rgba(255, 0, 85, 0.15);
+      color: var(--accent-alert);
+      border: 1px solid var(--accent-alert);
+      padding: 0.3rem 0.7rem;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+    }
+
+    .alert-time {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .threat-type-box {
+      margin-bottom: 1rem;
+    }
+
+    .threat-name {
+      font-size: 1.15rem;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 0.2rem;
+    }
+
+    .threat-mitre {
+      font-size: 0.75rem;
+      color: var(--accent-warning);
+    }
+
+    .threat-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+      background: rgba(5, 8, 12, 0.8);
+      padding: 0.8rem;
+      border-radius: 10px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .metric {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric .label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    .metric .val {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-top: 0.1rem;
+    }
+
+    .val.danger { color: var(--accent-alert); }
+    .val.primary { color: var(--primary-cyan); }
+    .val.risk { color: var(--accent-warning); }
+    .val.status { color: var(--accent-green); }
+
+    /* 1-Tap Action Buttons */
+    .action-buttons-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .btn-action {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      padding: 0.9rem 1rem;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-isolate {
+      background: rgba(0, 243, 255, 0.1);
+      border-color: var(--primary-cyan);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
+    }
+
+    .btn-isolate:hover {
+      background: var(--primary-cyan);
+      color: #070a0f;
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+    }
+
+    .btn-block-ip {
+      background: rgba(255, 0, 85, 0.1);
+      border-color: var(--accent-alert);
+      color: #fff;
+      box-shadow: 0 0 15px rgba(255, 0, 85, 0.15);
+    }
+
+    .btn-block-ip:hover {
+      background: var(--accent-alert);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(255, 0, 85, 0.4);
+    }
+
+    .btn-icon {
+      font-size: 1.4rem;
+    }
+
+    .btn-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btn-title {
+      font-size: 0.88rem;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      letter-spacing: 0.02em;
+    }
+
+    .btn-sub {
+      font-size: 0.72rem;
+      opacity: 0.8;
+    }
+
+    /* Trigger New Alert Box */
+    .trigger-box {
+      text-align: center;
+    }
+
+    .btn-trigger {
+      width: 100%;
+      padding: 0.65rem;
+      background: rgba(157, 78, 221, 0.12);
+      border: 1px solid var(--accent-purple);
+      color: var(--accent-purple);
+      border-radius: 10px;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-trigger:hover {
+      background: var(--accent-purple);
+      color: #fff;
+    }
+
+    /* Execution Banner */
+    .execution-banner {
+      background: rgba(0, 255, 157, 0.12);
+      border: 1px solid var(--accent-green);
+      padding: 0.8rem 1rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .exec-icon {
+      font-size: 1.4rem;
+      color: var(--accent-green);
+    }
+
+    .exec-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      font-family: var(--font-mono);
+    }
+
+    .exec-desc {
+      font-size: 0.75rem;
+      color: var(--text-main);
+    }
+
+    /* Audit Section */
+    .audit-section {
+      background: rgba(14, 20, 31, 0.5);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 0.9rem;
+    }
+
+    .section-title {
+      font-size: 0.78rem;
+      color: var(--primary-cyan);
+      margin-bottom: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .audit-logs-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .log-item {
+      background: rgba(5, 8, 12, 0.8);
+      padding: 0.5rem 0.7rem;
+      border-radius: 6px;
+      border-left: 3px solid var(--primary-cyan);
+      font-size: 0.73rem;
+    }
+
+    .log-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.2rem;
+      font-family: var(--font-mono);
+    }
+
+    .log-action {
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    .log-time {
+      color: var(--text-muted);
+    }
+
+    .log-details {
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    .app-footer {
+      padding: 0.8rem;
+      background: #05080c;
+      border-top: 1px solid var(--glass-border);
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 1.2rem;
+    }
+
+    .app-footer a {
+      color: var(--primary-cyan);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="simulator-container">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-top">
+        <div class="brand-badge">
+          <span class="status-pulse"></span>
+          <span class="mono">AdeoSOC Mobile v2.1</span>
+        </div>
+        <div class="header-right">
+          <span class="api-status mono" id="api-status">STANDALONE READY</span>
+        </div>
+      </div>
+      <h1 class="app-title">Centro de Respuesta 1-Tap</h1>
+      <p class="app-subtitle">Módulo táctico de contención de incidentes vSOC</p>
+    </header>
+
+    <!-- Main Body -->
+    <main class="app-body">
+      
+      <section class="alert-card" id="alert-card">
+        <div class="alert-header">
+          <span class="badge-critical"><i class="fa-solid fa-triangle-exclamation"></i> ALERTA CRÍTICA #<span id="alert-id">ALT-9482</span></span>
+          <span class="alert-time mono" id="alert-time">--:--:--</span>
+        </div>
+
+        <div class="threat-type-box">
+          <h2 class="threat-name" id="threat-name">Tor Exit Node Intrusion Attempt</h2>
+          <div class="threat-mitre mono" id="threat-mitre">MITRE ATT&CK: T1071.001 - Web Protocols</div>
+        </div>
+
+        <div class="threat-metrics">
+          <div class="metric">
+            <span class="label">IP Origen Maliciosa</span>
+            <span class="val mono danger" id="threat-ip">185.220.101.5</span>
+          </div>
+          <div class="metric">
+            <span class="label">Host Objetivo (IT/OT)</span>
+            <span class="val mono primary" id="threat-host">OT-PLC-GATEWAY-04</span>
+          </div>
+          <div class="metric">
+            <span class="label">Score de Riesgo</span>
+            <span class="val mono risk" id="threat-risk">98 / 100</span>
+          </div>
+          <div class="metric">
+            <span class="label">Estado de Mitigación</span>
+            <span class="val mono status" id="threat-status">PENDIENTE DE ACCIÓN</span>
+          </div>
+        </div>
+
+        <!-- 1-TAP ACTION BUTTONS -->
+        <div class="action-buttons-grid">
+          <button class="btn-action btn-isolate" id="btn-isolate" onclick="executeContainment('isolate')">
+            <div class="btn-icon"><i class="fa-solid fa-network-wired"></i></div>
+            <div class="btn-text">
+              <span class="btn-title">AISLAR HOST (1-TAP)</span>
+              <span class="btn-sub">Bloqueo de red via Tailscale ACL & Wazuh</span>
+            </div>
+          </button>
+
+          <button class="btn-action btn-block-ip" id="btn-block-ip" onclick="executeContainment('block-ip')">
+            <div class="btn-icon"><i class="fa-solid fa-ban"></i></div>
+            <div class="btn-text">
+              <span class="btn-title">BLOQUEAR IP (1-TAP)</span>
+              <span class="btn-sub">Regla Firewall IPTables & Active Response</span>
+            </div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Trigger New Incident Test Control -->
+      <div class="trigger-box">
+        <button class="btn-trigger mono" onclick="triggerNewAlert()">
+          <i class="fa-solid fa-bolt"></i> Simular Nueva Alerta Entrante (Push)
+        </button>
+      </div>
+
+      <!-- Execution Feedback Banner -->
+      <div class="execution-banner" id="execution-banner" style="display: none;">
+        <div class="exec-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="exec-info">
+          <div class="exec-title" id="exec-title">Contención Ejecutada en 0.38s</div>
+          <div class="exec-desc" id="exec-desc">Aislamiento aplicado con éxito en Wazuh & Tailscale.</div>
+        </div>
+      </div>
+
+      <!-- Live Audit Log Section -->
+      <section class="audit-section">
+        <div class="section-title mono">
+          <i class="fa-solid fa-list-check"></i> Registro Auditado de Contenciones
+        </div>
+        <div class="audit-logs-list" id="audit-logs-list">
+          <!-- Injected via JavaScript -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer mono">
+      <span>Rafael Adiosdado (RACD)</span>
+      <a href="https://adeodato.es" target="_blank">adeodato.es</a>
+    </footer>
+
+  </div>
+
+  <script>
+    // Standalone Interactive State Data
+    let currentAlert = {
+      alert_id: "ALT-9482",
+      severity: "CRITICAL",
+      source_ip: "185.220.101.5",
+      target_host: "OT-PLC-GATEWAY-04",
+      threat_type: "Tor Exit Node Intrusion Attempt",
+      mitre_technique: "T1071.001 - Web Protocols",
+      risk_score: 98,
+      timestamp: new Date().toLocaleTimeString(),
+      status: "UNHANDLED"
+    };
+
+    let auditLogs = [
+      {
+        id: "LOG-1001",
+        timestamp: new Date(Date.now() - 3600000).toLocaleTimeString(),
+        action: "SYSTEM_INIT",
+        target: "vSOC-Gateway",
+        operator: "SYSTEM",
+        details: "Módulo de contención instantánea iniciado en standby."
+      }
+    ];
+
+    const threatCatalog = [
+      {
+        threat_type: "Ransomware Outbreak Attempt",
+        mitre_technique: "T1486 - Data Encrypted for Impact",
+        target_host: "FINANCE-SRV-01",
+        source_ip: "192.168.1.104",
+        risk_score: 99
+      },
+      {
+        threat_type: "Unauthorised SSH Brute-Force",
+        mitre_technique: "T1110 - Brute Force",
+        target_host: "LINUX-PROD-DB",
+        source_ip: "45.142.214.88",
+        risk_score: 94
+      },
+      {
+        threat_type: "Modbus PLC Abnormal Command Ingress",
+        mitre_technique: "T0855 - Unauthorized Command Message",
+        target_host: "OT-SCADA-PLC-02",
+        source_ip: "10.0.4.15",
+        risk_score: 97
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAlert();
+      renderLogs();
+    });
+
+    function renderAlert() {
+      document.getElementById('alert-id').innerText = currentAlert.alert_id;
+      document.getElementById('alert-time').innerText = currentAlert.timestamp;
+      document.getElementById('threat-name').innerText = currentAlert.threat_type;
+      document.getElementById('threat-mitre').innerText = `MITRE ATT&CK: ${currentAlert.mitre_technique}`;
+      document.getElementById('threat-ip').innerText = currentAlert.source_ip;
+      document.getElementById('threat-host').innerText = currentAlert.target_host;
+      document.getElementById('threat-risk').innerText = `${currentAlert.risk_score} / 100`;
+
+      const statusElem = document.getElementById('threat-status');
+      const cardElem = document.getElementById('alert-card');
+
+      if (currentAlert.status === 'CONTAINED_ISOLATED') {
+        statusElem.innerText = 'HOST AISLADO (CONTENIDO)';
+        statusElem.style.color = 'var(--accent-green)';
+        cardElem.style.borderColor = 'var(--accent-green)';
+      } else if (currentAlert.status === 'CONTAINED_IP_BLOCKED') {
+        statusElem.innerText = 'IP BLOQUEADA (CONTENIDA)';
+        statusElem.style.color = 'var(--accent-green)';
+        cardElem.style.borderColor = 'var(--accent-green)';
+      } else {
+        statusElem.innerText = 'PENDIENTE DE ACCIÓN';
+        statusElem.style.color = 'var(--accent-alert)';
+        cardElem.style.borderColor = 'rgba(255, 0, 85, 0.4)';
+      }
+    }
+
+    function executeContainment(type) {
+      const ms = Math.floor(Math.random() * 150) + 280;
+      let actionName = '';
+      let detailsMsg = '';
+
+      if (type === 'isolate') {
+        actionName = 'ISOLATE_HOST';
+        detailsMsg = `Aislamiento de red aplicado via Tailscale ACL & Wazuh Lock a ${currentAlert.target_host} en ${ms}ms.`;
+        currentAlert.status = 'CONTAINED_ISOLATED';
+      } else {
+        actionName = 'BLOCK_IP';
+        detailsMsg = `Regla Firewall IPTables & Wazuh Active Response enviada para bloquear la IP ${currentAlert.source_ip} en ${ms}ms.`;
+        currentAlert.status = 'CONTAINED_IP_BLOCKED';
+      }
+
+      const newLog = {
+        id: `LOG-${auditLogs.length + 1001}`,
+        timestamp: new Date().toLocaleTimeString(),
+        action: actionName,
+        target: type === 'isolate' ? currentAlert.target_host : currentAlert.source_ip,
+        operator: 'Analista (AdeoSOC HUD 1-Tap)',
+        details: detailsMsg
+      };
+
+      auditLogs.unshift(newLog);
+      renderAlert();
+      renderLogs();
+
+      showBanner(actionName, detailsMsg, ms);
+    }
+
+    function showBanner(action, msg, ms) {
+      const banner = document.getElementById('execution-banner');
+      const title = document.getElementById('exec-title');
+      const desc = document.getElementById('exec-desc');
+
+      title.innerText = `✅ ${action} Completado en ${ms}ms`;
+      desc.innerText = msg;
+
+      banner.style.display = 'flex';
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 5000);
+    }
+
+    function triggerNewAlert() {
+      const item = threatCatalog[Math.floor(Math.random() * threatCatalog.length)];
+      currentAlert = {
+        alert_id: `ALT-${Math.floor(Math.random() * 9000) + 1000}`,
+        severity: "CRITICAL",
+        source_ip: item.source_ip,
+        target_host: item.target_host,
+        threat_type: item.threat_type,
+        mitre_technique: item.mitre_technique,
+        risk_score: item.risk_score,
+        timestamp: new Date().toLocaleTimeString(),
+        status: "UNHANDLED"
+      };
+
+      document.getElementById('execution-banner').style.display = 'none';
+      renderAlert();
+    }
+
+    function renderLogs() {
+      const logsList = document.getElementById('audit-logs-list');
+      logsList.innerHTML = '';
+
+      auditLogs.forEach(log => {
+        const item = document.createElement('div');
+        item.className = 'log-item';
+        item.innerHTML = `
+          <div class="log-item-header">
+            <span class="log-action">${log.action} [${log.target}]</span>
+            <span class="log-time">${log.timestamp}</span>
+          </div>
+          <div class="log-details">${log.details}</div>
+        `;
+        logsList.appendChild(item);
+      });
+    }
+  </script>
+</body>
+</html>
