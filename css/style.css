@@ -944,6 +944,41 @@ h1, h2, h3, h4, h5, h6 {
   flex-wrap: wrap;
 }
 
+/* CONTACT FORM INPUTS */
+input[type="text"],
+input[type="email"],
+textarea {
+  background: rgba(7, 10, 15, 0.8);
+  color: var(--text-main);
+  border: 1px solid var(--glass-border);
+  padding: 0.75rem;
+  border-radius: 8px;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+textarea::placeholder {
+  color: var(--text-dim);
+  opacity: 1;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  border-color: var(--primary-cyan);
+  box-shadow: 0 0 12px var(--primary-cyan-glow);
+}
+
+textarea {
+  min-height: 120px;
+  resize: vertical;
+  color: var(--text-main);
+}
+
 /* RESPONSIVE DESIGN */
 @media (max-width: 992px) {
   .hero-grid {
@@ -979,4 +1014,3 @@ h1, h2, h3, h4, h5, h6 {
     padding: 60px 0;
   }
 }
-
