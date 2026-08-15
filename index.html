@@ -465,23 +465,63 @@
       </div>
 
       <div style="max-width: 600px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border-cyber); padding: 2.5rem; border-radius: 16px; backdrop-filter: blur(12px);">
-        <form onsubmit="event.preventDefault(); alert('Transmisión enviada correctamente.');">
+        <form id="contact-form">
+          <input type="hidden" name="_subject" value="Nuevo mensaje desde adeodato.es">
+          <input type="hidden" name="_template" value="table">
+          <input type="hidden" name="_captcha" value="false">
+          <input type="text" name="_honey" value="" style="display:none;">
           <div style="margin-bottom: 1.2rem;">
             <label class="mono" style="display: block; font-size: 0.85rem; color: var(--primary-cyan); margin-bottom: 0.4rem;">NOMBRE / ENTIDAD</label>
-            <input type="text" required placeholder="Tu nombre o empresa" style="width: 100%; padding: 0.8rem; background: rgba(7, 10, 15, 0.8); border: 1px solid var(--glass-border); border-radius: 8px; font-family: var(--font-mono); font-size: 0.95rem; color: var(--text-main);">
+            <input type="text" name="nombre" required placeholder="Tu nombre o empresa" style="width: 100%; padding: 0.8rem; background: rgba(7, 10, 15, 0.8); border: 1px solid var(--glass-border); border-radius: 8px; font-family: var(--font-mono); font-size: 0.95rem; color: var(--text-main);">
           </div>
           <div style="margin-bottom: 1.2rem;">
             <label class="mono" style="display: block; font-size: 0.85rem; color: var(--primary-cyan); margin-bottom: 0.4rem;">CORREO ELECTRÓNICO</label>
-            <input type="email" required placeholder="tuemail@dominio.com" style="width: 100%; padding: 0.8rem; background: rgba(7, 10, 15, 0.8); border: 1px solid var(--glass-border); border-radius: 8px; font-family: var(--font-mono); font-size: 0.95rem; color: var(--text-main);">
+            <input type="email" name="email" required placeholder="tuemail@dominio.com" style="width: 100%; padding: 0.8rem; background: rgba(7, 10, 15, 0.8); border: 1px solid var(--glass-border); border-radius: 8px; font-family: var(--font-mono); font-size: 0.95rem; color: var(--text-main);">
           </div>
           <div style="margin-bottom: 1.5rem;">
             <label class="mono" style="display: block; font-size: 0.85rem; color: var(--primary-cyan); margin-bottom: 0.4rem;">MENSAJE</label>
-            <textarea rows="4" required placeholder="Detalles de tu consulta..." style="width: 100%; padding: 0.8rem; background: rgba(7, 10, 15, 0.8); border: 1px solid var(--glass-border); border-radius: 8px; font-family: var(--font-mono); font-size: 0.95rem; color: var(--text-main); min-height: 120px; resize: vertical;"></textarea>
+            <textarea name="mensaje" rows="4" required placeholder="Detalles de tu consulta..." style="width: 100%; padding: 0.8rem; background: rgba(7, 10, 15, 0.8); border: 1px solid var(--glass-border); border-radius: 8px; font-family: var(--font-mono); font-size: 0.95rem; color: var(--text-main); min-height: 120px; resize: vertical;"></textarea>
           </div>
           <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;">
             <i class="fa-solid fa-paper-plane"></i> Enviar Mensaje Encriptado
           </button>
+          <div id="contact-status" class="mono" style="margin-top: 0.9rem; font-size: 0.85rem; text-align: center; min-height: 1.1em;"></div>
         </form>
+        <script>
+        (function () {
+          var form = document.getElementById('contact-form');
+          if (!form) return;
+          form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            var btn = form.querySelector('button[type="submit"]');
+            var st = document.getElementById('contact-status');
+            st.textContent = 'Enviando...';
+            st.style.color = 'var(--primary-cyan)';
+            btn.disabled = true;
+            var data = Object.fromEntries(new FormData(form).entries());
+            try {
+              var res = await fetch('https://formsubmit.co/ajax/adiosdado@adeodato.es', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(data)
+              });
+              var j = await res.json();
+              if (res.ok && j.success === 'true') {
+                st.textContent = 'Mensaje enviado. Gracias.';
+                st.style.color = 'var(--accent-green)';
+                form.reset();
+              } else {
+                st.textContent = 'Error al enviar. Inténtalo de nuevo o escríbeme a adiosdado@adeodato.es';
+                st.style.color = '#ff6b6b';
+              }
+            } catch (err) {
+              st.textContent = 'No se pudo enviar. Escríbeme a adiosdado@adeodato.es';
+              st.style.color = '#ff6b6b';
+            }
+            btn.disabled = false;
+          });
+        })();
+        </script>
 
         <!-- CV link in Contact section -->
         <div style="margin-top:1rem; text-align:center;">
