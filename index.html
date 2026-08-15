@@ -510,6 +510,9 @@
                 st.textContent = 'Mensaje enviado. Gracias.';
                 st.style.color = 'var(--accent-green)';
                 form.reset();
+              } else if (j.message && /activation/i.test(j.message)) {
+                st.textContent = 'Falta activar el formulario: revisa el correo adiosdado@adeodato.es y pulsa "Activate Form" (también en spam).';
+                st.style.color = '#ffd166';
               } else {
                 st.textContent = 'Error al enviar. Inténtalo de nuevo o escríbeme a adiosdado@adeodato.es';
                 st.style.color = '#ff6b6b';
