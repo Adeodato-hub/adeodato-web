@@ -23,6 +23,25 @@ const PROJECT_DATA = {
     ],
     command: 'simulate-attack'
   },
+  'soc-dashboard': {
+    title: 'SOC Adeodato Dashboard · ARGOS Panel Vitrina',
+    category: 'vSOC / Monitoring UI',
+    description: 'Panel de escritorio vitrina que unifica la vigilancia de ARGOS y AdeoSOC en una sola vista operativa: alertas en vivo, donut de severidad, casos de incidente con timeline PICERL, respuesta automática y técnicas MITRE ATT&CK. Sin exposición a Internet: escucha solo en loopback y se comunica con el SOC por red privada cifrada.',
+    repoUrl: 'https://github.com/Adeodato-hub/SOC-Adeodato-Dashboard',
+    flow: [
+      { name: 'ARGOS', sub: 'Detección · Wazuh · MISP' },
+      { name: 'AdeoSOC', sub: 'Contención / Respuesta' },
+      { name: 'Panel Loopback', sub: '127.0.0.1:8080' },
+      { name: 'Operador', sub: 'Navegador local / móvil' }
+    ],
+    specs: [
+      '<b>KPIs en vivo:</b> alertas 24 h, amenazas contenidas, casos abiertos (IRIS) y alertas OT.',
+      '<b>Feed filtrable:</b> todas / críticas / altas / medias / bajas, con detalle de alerta completo.',
+      '<b>Casos PICERL:</b> expediente con narrativa, enriquecimiento IA + MISP, timeline y recomendaciones.',
+      '<b>Seguridad por diseño:</b> solo loopback + red privada cifrada; nada sale a Internet. Demo estática en esta web.'
+    ],
+    command: 'projects'
+  },
   'adeosoc': {
     title: 'AdeoSOC · Android vSOC Alert Center',
     category: 'Android Native Security',

