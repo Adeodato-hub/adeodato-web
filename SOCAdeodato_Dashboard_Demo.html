@@ -214,7 +214,7 @@
         <div class="live demo" id="mode-pill"><span class="dot"></span><span id="mode-txt">MODO DEMO</span></div>
         <div class="clock" id="clock">--:--:--</div>
         <button class="btn-ghost" onclick="refresh()" title="Actualizar ahora">↻</button>
-        <button class="btn-ghost" id="btn-demo" onclick="toggleDemo()">DEMO: ON</button>
+        <button class="btn-ghost" onclick="toggleDemo()" title="Esta demo es una réplica estática: no se conecta a ningún SOC">DEMO</button>
       </div>
     </div>
     <div class="demo-note" id="demo-note"><span>Replica estatica del panel · datos de demostración · </span><b>sin exposición a Internet.</b></div>
@@ -399,10 +399,11 @@ function setClock(){
 }
 
 function toggleDemo(){
-  var demo=$('mode-pill').classList.toggle('demo');
-  $('btn-demo').innerHTML=demo?'DEMO: ON':'DEMO: OFF';
-  $('mode-txt').textContent=demo?'MODO DEMO':'EN VIVO';
-  $('demo-note').style.display=demo?'block':'none';
+  var pill=$('mode-pill');
+  pill.className='live demo';
+  $('mode-txt').textContent='MODO DEMO';
+  $('demo-note').style.display='block';
+  $('demo-note').innerHTML='<span>Replica estatica del panel — los datos son <b>simulados</b>. Esta demo no puede conectarse a ningun SOC real ni mostrar datos reales.</span>';
   refresh();
 }
 
