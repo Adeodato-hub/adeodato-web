@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Control parental en Android sin root: filtrado con DNS-over-HTTPS (así construí AdeoShield) | Adeodato</title>
+<meta name="description" content="Cómo construí AdeoShield: un control parental para Android que filtra contenido con DNS-over-HTTPS mediante un VPN local, sin root ni ADB, con seguridad por diseño y un modelo de amenaza honesto.">
+<meta name="keywords" content="control parental Android, DNS-over-HTTPS, DoH, VpnService, Android sin root, seguridad Android, Kotlin, desarrollo seguro, AdeoShield, Adeodato">
+<meta name="author" content="Rafael Adiosdado Caballero Diéguez (Adeodato)">
+<link rel="canonical" href="https://adeodato.es/articulo-adeoshield.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Control parental en Android sin root: filtrado con DNS-over-HTTPS (AdeoShield)">
+<meta property="og:description" content="Filtrar contenido en Android sin root, con un VPN local y DNS-over-HTTPS. Arquitectura, decisiones de seguridad y modelo de amenaza.">
+<meta property="og:url" content="https://adeodato.es/articulo-adeoshield.html">
+<meta property="og:image" content="https://adeodato.es/logo.png">
+<style>
+  :root{--bg:#0B0E14;--panel:#141A24;--green:#3AE374;--red:#FF5C5C;--txt:#E8EAED;--muted:#9AA3B2;--border:#26303F}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.7}
+  a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 20px 80px}
+  .top{font-family:ui-monospace,Consolas,monospace;color:var(--green);font-size:.85rem;margin-bottom:18px}
+  h1{font-size:2.1rem;line-height:1.2;margin:.2em 0 .3em}
+  h2{font-size:1.4rem;color:#fff;margin:1.8em 0 .5em;border-bottom:1px solid var(--border);padding-bottom:.3em}
+  .meta{color:var(--muted);font-size:.9rem;margin-bottom:1.5em}
+  .lead{font-size:1.15rem;color:#fff}
+  .note{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:10px;padding:14px 18px;margin:1.4em 0}
+  code,pre{font-family:ui-monospace,Consolas,monospace}
+  pre{background:#0A0C10;border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow:auto;font-size:.85rem;color:#d6f5e3}
+  code{background:#0A0C10;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.85em;color:var(--green)}
+  pre code{background:none;border:none;padding:0}
+  ul{padding-left:1.2em}li{margin:.4em 0}
+  .cta{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-top:2.4em}
+  .cta h2{border:none;margin-top:0}
+  .btn{display:inline-block;background:var(--green);color:#06210f;font-weight:700;padding:10px 18px;border-radius:8px;margin-top:8px}
+  .btn:hover{text-decoration:none;opacity:.9}
+  hr{border:none;border-top:1px solid var(--border);margin:2.4em 0}
+  .back{color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<article class="wrap">
+  <div class="top">adeodato@dev:~$ ./adeoshield --filter dns</div>
+  <a class="back" href="/index.html">&larr; Volver a adeodato.es</a>
+
+  <h1>Control parental en Android sin root: filtrado con DNS-over-HTTPS (así construí AdeoShield)</h1>
+  <div class="meta">Por Rafael Adiosdado Caballero Diéguez · Adeodato · Ciberseguridad IT/OT · 2026 · ~6 min de lectura</div>
+
+  <p class="lead">Filtrar el contenido que ve un dispositivo Android <strong>sin rootearlo y sin ADB</strong> parece imposible: el sistema aísla las apps entre sí. La solución no está en pelearse con el sistema, sino en usar una de sus piezas a tu favor — un <strong>VPN local</strong> — combinada con <strong>DNS-over-HTTPS</strong>. Así construí <strong>AdeoShield</strong>, y estas son las decisiones de ingeniería (y sus límites honestos).</p>
+
+  <h2>El reto: filtrar sin root</h2>
+  <p>En Android, una app no puede leer ni bloquear el tráfico de otra: es la base del modelo de seguridad de la plataforma. Los controles parentales "de verdad" suelen exigir root o un MDM corporativo. AdeoShield evita ambos apoyándose en una API pública y legítima: <code>VpnService</code>.</p>
+
+  <h2>Cómo funciona</h2>
+  <p>La idea es interponerse solo en el punto justo — la resolución de nombres (DNS) — sin tocar el resto del tráfico:</p>
+  <ul>
+    <li><strong>VPN local (VpnService):</strong> la app levanta una interfaz VPN <em>en el propio dispositivo</em>. No hay servidor remoto ni túnel a terceros: el tráfico no sale de un tercero.</li>
+    <li><strong>Intercepta el DNS:</strong> captura las consultas de resolución de dominios que hacen las apps.</li>
+    <li><strong>Resuelve por DNS-over-HTTPS:</strong> reenvía esas consultas cifradas por HTTPS a un resolutor DoH, de modo que ni siquiera el operador ve qué se consulta.</li>
+    <li><strong>Bloquea o permite:</strong> según listas de dominios (maliciosos, adultos, no deseados), devuelve la resolución o la corta.</li>
+  </ul>
+  <p>El esqueleto del arranque de la VPN local es el patrón estándar de Android:</p>
+  <pre><code>val builder = Builder()
+    .setSession("AdeoShield")
+    .addAddress("10.0.0.2", 32)
+    .addDnsServer("10.0.0.1")   // el DNS lo atiende la propia app
+val vpnInterface = builder.establish()
+// A partir de aquí: leer las consultas DNS del descriptor,
+// resolverlas por DoH y responder segun las listas.</code></pre>
+
+  <h2>Seguridad por diseño</h2>
+  <p>Una app que "protege" tiene que ser, ella misma, difícil de vulnerar. Las decisiones clave:</p>
+  <ul>
+    <li><strong>PIN parental con PBKDF2:</strong> nunca se guarda en texto plano; se almacena la derivación de clave, no el PIN.</li>
+    <li><strong>Protección de pantallas críticas:</strong> un servicio de accesibilidad detecta y bloquea el acceso a Ajustes y a la desinstalación; junto con Device Admin, evita que se desactive sin el PIN.</li>
+    <li><strong>APK de release firmado</strong> (keystore RSA 2048) y <strong>secretos fuera del control de versiones</strong> — nada de claves en el repositorio.</li>
+    <li><strong>Sin telemetría:</strong> el filtrado ocurre en el dispositivo; no se envían datos de navegación a ningún sitio.</li>
+  </ul>
+
+  <h2>El modelo de amenaza (y sus límites honestos)</h2>
+  <p>Parte de la ingeniería seria es decir <strong>hasta dónde NO llega</strong> tu defensa. En Android, un control parental instalado como app de usuario tiene límites estructurales: alguien con acceso físico, conocimientos y tiempo —modo seguro, ADB, restablecimiento de fábrica— puede sortearlo. AdeoShield sube mucho el listón para un uso normal, pero no es una jaula inviolable, y documentarlo así es más honesto (y más profesional) que prometer lo imposible.</p>
+
+  <h2>La lección</h2>
+  <p>Incluso una app "sencilla" como un control parental es un ejercicio de ingeniería de seguridad: entender el modelo de la plataforma, usar sus piezas a tu favor, cifrar por defecto, proteger la propia app y ser transparente sobre sus límites. Pensar como atacante para construir mejor como desarrollador.</p>
+
+  <div class="cta">
+    <h2>¿Necesitas software con la seguridad integrada desde el diseño?</h2>
+    <p>En <strong>Adeodato</strong> desarrollo aplicaciones seguras (Android/Kotlin) y monto ciberseguridad para PYME e industria. Si tienes un proyecto entre manos, hablemos.</p>
+    <a class="btn" href="/index.html#contacto">Hablemos</a>
+    &nbsp;&nbsp;<a href="https://github.com/Adeodato-hub/AdeoShield">Ver AdeoShield en GitHub</a>
+  </div>
+
+  <hr>
+  <p class="back">Rafael Adiosdado Caballero Diéguez · Adeodato · Ciberseguridad IT/OT · <a href="/index.html">adeodato.es</a> · <a href="https://github.com/Adeodato-hub">GitHub</a></p>
+</article>
+</body>
+</html>
