@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slowloris: cómo una sola máquina tumba un servidor web (y cómo defenderte) | Adeodato</title>
+<meta name="description" content="Análisis defensivo del ataque Slowloris (DoS de Capa 7): cómo una sola máquina agota las conexiones de un servidor web, cómo detectarlo y el playbook de mitigación (timeouts, mod_reqtimeout, WAF).">
+<meta name="keywords" content="Slowloris, ataque DoS Capa 7, slowhttptest, denegación de servicio, mitigación Slowloris, timeouts, mod_reqtimeout, WAF, ciberseguridad, Blue Team, hardening, Adeodato">
+<meta name="author" content="Rafael Adiosdado Caballero Diéguez (Adeodato)">
+<link rel="canonical" href="https://adeodato.es/articulo-slowloris.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Slowloris: cómo una sola máquina tumba un servidor web (y cómo defenderte)">
+<meta property="og:description" content="Ataque DoS de Capa 7 explicado desde el lado defensivo: demostración en laboratorio, detección y mitigación.">
+<meta property="og:url" content="https://adeodato.es/articulo-slowloris.html">
+<meta property="og:image" content="https://adeodato.es/slowloris-colapso.png">
+<style>
+  :root{--bg:#0B0E14;--panel:#141A24;--green:#3AE374;--red:#FF5C5C;--txt:#E8EAED;--muted:#9AA3B2;--border:#26303F}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.7}
+  a{color:var(--green);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 20px 80px}
+  .top{font-family:ui-monospace,Consolas,monospace;color:var(--green);font-size:.85rem;margin-bottom:18px}
+  h1{font-size:2.1rem;line-height:1.2;margin:.2em 0 .3em}
+  h2{font-size:1.4rem;color:#fff;margin:1.8em 0 .5em;border-bottom:1px solid var(--border);padding-bottom:.3em}
+  .meta{color:var(--muted);font-size:.9rem;margin-bottom:1.5em}
+  .lead{font-size:1.15rem;color:#fff}
+  .stat{background:var(--panel);border:1px solid var(--border);border-left:3px solid var(--red);border-radius:10px;padding:16px 20px;margin:1.4em 0;font-size:1.1rem}
+  .stat b{color:var(--red)}
+  code,pre{font-family:ui-monospace,Consolas,monospace}
+  pre{background:#0A0C10;border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow:auto;font-size:.85rem;color:#d6f5e3}
+  code{background:#0A0C10;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.85em;color:var(--green)}
+  pre code{background:none;border:none;padding:0}
+  figure{margin:1.6em 0}
+  img{max-width:100%;border:1px solid var(--border);border-radius:10px;display:block}
+  figcaption{color:var(--muted);font-size:.85rem;margin-top:.5em;font-style:italic}
+  ul{padding-left:1.2em}
+  li{margin:.4em 0}
+  .tag{color:var(--green)}
+  .cta{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-top:2.4em}
+  .cta h2{border:none;margin-top:0}
+  .btn{display:inline-block;background:var(--green);color:#06210f;font-weight:700;padding:10px 18px;border-radius:8px;margin-top:8px}
+  .btn:hover{text-decoration:none;opacity:.9}
+  hr{border:none;border-top:1px solid var(--border);margin:2.4em 0}
+  .back{color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<article class="wrap">
+  <div class="top">adeodato@soc:~$ ./slowloris --target tu-web</div>
+  <a class="back" href="/index.html">&larr; Volver a adeodato.es</a>
+
+  <h1>Slowloris: cómo una sola máquina tumba un servidor web (y cómo defenderte)</h1>
+  <div class="meta">Por Rafael Adiosdado Caballero Diéguez · Adeodato · Ciberseguridad IT/OT · Agosto 2026 · ~6 min de lectura</div>
+
+  <p class="lead">Una sola máquina, sin botnets y sin saturar la red, puede dejar un servidor web sin responder en cuestión de segundos. No es un ataque volumétrico: es <strong>Slowloris</strong>, un ataque de Denegación de Servicio de <strong>Capa 7</strong> que no ahoga tu ancho de banda, sino tus conexiones. Lo reproduje en laboratorio para entenderlo por dentro y, sobre todo, para saber pararlo.</p>
+
+  <h2>Qué es Slowloris y por qué es peligroso</h2>
+  <p>Un ataque volumétrico clásico (flooding) busca saturar la red con tráfico masivo: es ruidoso y relativamente fácil de detectar. Slowloris hace justo lo contrario. Abre cientos de conexiones al servidor y envía las cabeceras HTTP <strong>a cámara lenta</strong>, de forma incompleta, manteniendo los <em>sockets</em> ocupados esperando datos que nunca llegan. Cuando se agota el límite de conexiones simultáneas del servidor, este deja de atender a usuarios legítimos.</p>
+  <p>Lo que lo hace tan traicionero para el defensor:</p>
+  <ul>
+    <li><strong>No consume ancho de banda:</strong> el consumo de red es mínimo.</li>
+    <li><strong>Le basta una sola máquina:</strong> no necesita una botnet.</li>
+    <li><strong>Parece tráfico legítimo:</strong> son peticiones HTTP válidas desde una IP normal, así que evade los firewalls de red tradicionales.</li>
+  </ul>
+
+  <h2>La demostración: del reconocimiento al colapso</h2>
+  <p>En un laboratorio controlado, con la herramienta <code>slowhttptest</code>, el ataque adopta la forma de un <em>Slow Headers</em> contra la página de login del servidor objetivo:</p>
+  <pre><code>slowhttptest -c 1000 -H -i 10 -r 200 -u http://servidor-victima/login.php -t GET</code></pre>
+  <p>Cada parámetro cuenta una parte de la historia que un defensor debe saber reconocer: <code>-c 1000</code> mantiene 1000 conexiones abiertas a la vez; <code>-H</code> activa el modo cabeceras lentas; <code>-i 10</code> envía un fragmento cada 10 segundos para mantener la conexión "viva"; <code>-r 200</code> abre 200 conexiones nuevas por segundo.</p>
+
+  <div class="stat">En el <b>segundo 10</b>: 623 conexiones ocupadas, 0 cerradas y <b>service available: NO</b>. El servidor está caído — sigue esperando cabeceras que nunca llegarán.</div>
+
+  <figure>
+    <img src="slowloris-colapso.png" alt="Captura de slowhttptest mostrando el colapso del servidor: 623 conexiones conectadas y service available NO">
+    <figcaption>Captura real del laboratorio: monitorización del colapso del servicio en Capa 7.</figcaption>
+  </figure>
+
+  <h2>Por qué funcionó: la vulnerabilidad no es el hardware</h2>
+  <p>El servidor no cayó por falta de potencia, sino por <strong>configuración</strong>. Cuatro debilidades habituales lo hacen posible:</p>
+  <ul>
+    <li><strong>Timeouts laxos:</strong> el servidor tolera esperas larguísimas por cabeceras que no llegan.</li>
+    <li><strong>Sin límite por IP:</strong> ningún tope de conexiones simultáneas por origen.</li>
+    <li><strong>Capa 7 = tráfico legítimo:</strong> las peticiones parecen válidas y evaden los firewalls de red.</li>
+    <li><strong>Sin WAF ni IDS:</strong> nadie alertó del volumen anómalo de conexiones abiertas.</li>
+  </ul>
+
+  <h2>Cómo detectarlo (perspectiva Blue Team)</h2>
+  <p>Estas son las señales que delatan un Slowloris en curso:</p>
+  <ul>
+    <li>Pico de conexiones concurrentes desde muy pocas IPs de origen.</li>
+    <li>Muchas conexiones en estado <code>ESTABLISHED</code> que no envían datos: esperan cabecera.</li>
+    <li><strong>Workers/slots agotados con la CPU y el ancho de banda bajos</strong> — la pista clave que distingue Slowloris de un ataque volumétrico.</li>
+    <li>Peticiones HTTP cuya cabecera se recibe a goteo y nunca se completa.</li>
+  </ul>
+  <p><strong>Regla de oro:</strong> si el número de conexiones abiertas sube pero el tráfico real no, sospecha.</p>
+
+  <h2>Cómo defenderte: el playbook</h2>
+  <p>La buena noticia es que la defensa más efectiva es también la más barata:</p>
+  <ul>
+    <li><strong>Timeouts agresivos</strong> — <code>RequestReadTimeout</code> (Apache) / <code>client_header_timeout</code> (Nginx). La medida de mayor impacto.</li>
+    <li><strong>mod_reqtimeout</strong> — corta automáticamente las conexiones lentas.</li>
+    <li><strong>Límites por IP</strong> — <code>LimitRequestFields</code>, <code>MaxKeepAliveRequests</code>.</li>
+    <li><strong>Control de tasa</strong> — <code>limit_req_zone</code> en Nginx para frenar ráfagas.</li>
+    <li><strong>fail2ban</strong> — bloqueo dinámico ante comportamiento anómalo.</li>
+    <li><strong>WAF / CDN</strong> (Cloudflare, Akamai) — absorben y filtran el tráfico antes de que llegue.</li>
+  </ul>
+  <p>La clave conceptual: <strong>los timeouts estrictos impiden que las conexiones incompletas ocupen sockets indefinidamente</strong>, que es exactamente el mecanismo del ataque.</p>
+
+  <h2>La lección</h2>
+  <p>La robustez de un sistema no se mide por lo rápido que procesa peticiones, sino por su capacidad de gestionar <strong>conexiones anómalas</strong>. Slowloris opera bajo el radar, simulando tráfico legítimo y agotando los recursos de forma silenciosa pero letal. Entender el ataque es el primer paso para diseñar la defensa.</p>
+
+  <div class="cta">
+    <h2>¿Tu servidor sobreviviría a esto?</h2>
+    <p>En <strong>Adeodato</strong> ayudo a PYME e industria a detectar, contener y responder ataques reales — también en los entornos OT que las soluciones genéricas ignoran. Si quieres una revisión de exposición de tu infraestructura, hablemos.</p>
+    <a class="btn" href="/index.html#contacto">Solicitar diagnóstico</a>
+    &nbsp;&nbsp;<a href="https://github.com/Adeodato-hub/SOC-Adeodato">Ver el proyecto SOC Adeodato en GitHub</a>
+  </div>
+
+  <hr>
+  <p class="back">Rafael Adiosdado Caballero Diéguez · Ciberseguridad IT/OT · <a href="/index.html">adeodato.es</a> · <a href="https://github.com/Adeodato-hub">GitHub</a></p>
+</article>
+</body>
+</html>
