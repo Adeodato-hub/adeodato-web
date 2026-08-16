@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artículos | Adeodato</title>
+<meta name="description" content="Artículos de Adeodato sobre ciberseguridad y desarrollo seguro: ataques, defensa y decisiones de ingeniería explicadas desde la práctica.">
+<meta name="keywords" content="artículos ciberseguridad, blog ciberseguridad, Adeodato, Blue Team, desarrollo seguro">
+<meta name="author" content="Rafael Adiosdado Caballero Diéguez (Adeodato)">
+<link rel="canonical" href="https://adeodato.es/articulos.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Artículos | Adeodato">
+<meta property="og:description" content="Ciberseguridad y desarrollo seguro explicados desde la práctica: ataques, defensa y decisiones de ingeniería reales.">
+<meta property="og:url" content="https://adeodato.es/articulos.html">
+<meta property="og:image" content="https://adeodato.es/logo.png">
+<style>
+  :root{--bg:#0B0E14;--panel:#141A24;--green:#3AE374;--txt:#E8EAED;--muted:#9AA3B2;--border:#26303F}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.7}
+  a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 20px 80px}
+  .top{font-family:ui-monospace,Consolas,monospace;color:var(--green);font-size:.85rem;margin-bottom:18px}
+  .back{color:var(--muted);font-size:.9rem}
+  h1{font-size:2.1rem;line-height:1.2;margin:.4em 0 .3em}
+  .lead{font-size:1.1rem;color:var(--muted);margin-bottom:2em}
+  .article-list{display:flex;flex-direction:column;gap:1.1rem;list-style:none;padding:0;margin:0}
+  .article-item{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px 22px;transition:border-color .15s ease}
+  .article-item:hover{border-color:var(--green)}
+  .article-title{display:block;color:#fff;font-size:1.2rem;font-weight:700;text-decoration:none;margin-bottom:.35em}
+  .article-title:hover{color:var(--green);text-decoration:none}
+  .article-desc{color:var(--muted);font-size:.98rem;margin:0}
+  hr{border:none;border-top:1px solid var(--border);margin:2.4em 0}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top">adeodato@soc:~$ ls ./articulos</div>
+  <a class="back" href="/index.html">&larr; Volver a adeodato.es</a>
+
+  <h1>Artículos</h1>
+  <p class="lead">Ciberseguridad y desarrollo seguro explicados desde la práctica: ataques, defensa y decisiones de ingeniería reales.</p>
+
+  <ul class="article-list">
+    <li class="article-item">
+      <a class="article-title" href="/articulo-slowloris.html">Slowloris: cómo una sola máquina tumba un servidor web (y cómo defenderte)</a>
+      <p class="article-desc">Ataque DoS de Capa 7 desde el lado defensivo: demostración, detección y mitigación.</p>
+    </li>
+    <li class="article-item">
+      <a class="article-title" href="/articulo-adeoshield.html">Control parental en Android sin root: filtrado con DNS-over-HTTPS (AdeoShield)</a>
+      <p class="article-desc">Desarrollo seguro en Android: VpnService + DoH, decisiones de seguridad y modelo de amenaza.</p>
+    </li>
+  </ul>
+
+  <hr>
+  <p class="back">Rafael Adiosdado Caballero Diéguez · Adeodato · Ciberseguridad IT/OT · <a href="/index.html">adeodato.es</a></p>
+</main>
+</body>
+</html>
