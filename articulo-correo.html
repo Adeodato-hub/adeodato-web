@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cómo protegí mi correo y mi web: SPF, DKIM y DMARC en la práctica | Adeodato</title>
+<meta name="description" content="Cómo blindé el correo de mi propio dominio contra phishing y suplantación con SPF, DKIM y DMARC — explicado paso a paso, con estándares abiertos. Más HTTPS en la web. Crear, no comprar.">
+<meta name="keywords" content="SPF, DKIM, DMARC, protección de correo, phishing, suplantación de dominio, spoofing, seguridad email, HTTPS, Zoho, Adeodato">
+<meta name="author" content="Rafael Adiosdado Caballero Diéguez (Adeodato)">
+<link rel="canonical" href="https://adeodato.es/articulo-correo.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cómo protegí mi correo y mi web: SPF, DKIM y DMARC en la práctica">
+<meta property="og:description" content="Blindar el correo contra suplantación con tres estándares abiertos, explicado paso a paso. Crear, no comprar.">
+<meta property="og:url" content="https://adeodato.es/articulo-correo.html">
+<style>
+  :root{--bg:#0B0E14;--panel:#141A24;--green:#3AE374;--red:#FF5C5C;--txt:#E8EAED;--muted:#9AA3B2;--border:#26303F}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.7}
+  a{color:var(--green);text-decoration:none}a:hover{text-decoration:underline}
+  .wrap{max-width:820px;margin:0 auto;padding:32px 20px 80px}
+  .top{font-family:ui-monospace,Consolas,monospace;color:var(--green);font-size:.85rem;margin-bottom:18px}
+  h1{font-size:2.05rem;line-height:1.2;margin:.2em 0 .3em}
+  h2{font-size:1.4rem;color:#fff;margin:1.8em 0 .5em;border-bottom:1px solid var(--border);padding-bottom:.3em}
+  .meta{color:var(--muted);font-size:.9rem;margin-bottom:1.5em}
+  .lead{font-size:1.15rem;color:#fff}
+  code,pre{font-family:ui-monospace,Consolas,monospace}
+  pre{background:#0A0C10;border:1px solid var(--border);border-radius:10px;padding:14px 16px;overflow:auto;font-size:.85rem;color:#d6f5e3}
+  code{background:#0A0C10;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:.85em;color:var(--green)}
+  pre code{background:none;border:none;padding:0}
+  ul{padding-left:1.2em}li{margin:.45em 0}
+  .lema{border-left:3px solid var(--green);background:#0d1521;padding:14px 18px;border-radius:0 10px 10px 0;margin:1.4em 0}
+  .lema strong{color:#fff}
+  .cta{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin-top:2.4em}
+  .cta h2{border:none;margin-top:0}
+  hr{border:none;border-top:1px solid var(--border);margin:2.4em 0}
+  .back{color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<article class="wrap">
+  <div class="top">adeodato@dominio:~$ dig TXT _dmarc.adeodato.es</div>
+  <a class="back" href="/index.html">&larr; Volver a adeodato.es</a>
+
+  <h1>Cómo protegí mi correo y mi web: SPF, DKIM y DMARC en la práctica</h1>
+  <div class="meta">Por Rafael Adiosdado Caballero Diéguez · Adeodato · Ciberseguridad IT/OT · 2026 · ~6 min de lectura</div>
+
+  <p class="lead">Un día me hice la pregunta incómoda: <strong>¿puede alguien enviar correos haciéndose pasar por mí?</strong> Sin la protección adecuada, la respuesta es sí — y colaría. Así que me puse a cerrar esa puerta en mi propio dominio. Comparto cómo funciona, por si te sirve.</p>
+
+  <h2>El problema: suplantar un correo es más fácil de lo que crees</h2>
+  <p>El protocolo del correo (SMTP) nació sin autenticación: por diseño, cualquiera puede escribir en el campo "De:" lo que quiera. Es la base del <strong>phishing</strong> y del <strong>fraude del CEO</strong> (BEC), el que más dinero mueve. Si tu dominio no está protegido, alguien puede escribir a tus clientes o a tu propio entorno como si fueras tú, y el correo llegará con tu nombre.</p>
+  <p>La defensa no es un producto que se compra: son <strong>tres estándares abiertos</strong> que se configuran una vez en el DNS del dominio y trabajan juntos.</p>
+
+  <h2>Capa 1 · SPF — quién puede enviar en mi nombre</h2>
+  <p>SPF (<em>Sender Policy Framework</em>) es una lista blanca de los servidores autorizados a enviar correo con tu dominio. Si un mensaje sale de un servidor que no está en la lista, el receptor sabe que algo huele mal. Es un registro TXT. En mi caso, el correo va por Zoho, así que:</p>
+  <pre><code>v=spf1 include:zohomail.eu ~all</code></pre>
+  <p>El <code>~all</code> indica "lo que no esté autorizado, trátalo como sospechoso". Solo puede existir <strong>un</strong> registro SPF por dominio.</p>
+
+  <h2>Capa 2 · DKIM — una firma que prueba que es auténtico</h2>
+  <p>DKIM (<em>DomainKeys Identified Mail</em>) añade a cada correo una <strong>firma criptográfica</strong>. El servidor de envío firma con una clave privada y el receptor verifica con la clave pública publicada en tu DNS. Demuestra dos cosas: que el correo salió de verdad de ti y que <strong>nadie lo manipuló</strong> por el camino. La clave pública se publica en un registro TXT bajo un "selector" (en mi proveedor, <code>zmail._domainkey</code>).</p>
+
+  <h2>Capa 3 · DMARC — qué hacer con quien falla (y visibilidad)</h2>
+  <p>DMARC (<em>Domain-based Message Authentication</em>) es el que ata todo: le dice al receptor qué hacer con los correos que no pasan SPF/DKIM, y —clave— te envía <strong>informes</strong> de quién está intentando enviar en tu nombre. Su política es progresiva:</p>
+  <ul>
+    <li><code>p=none</code> — solo observa e informa (no afecta a la entrega).</li>
+    <li><code>p=quarantine</code> — lo que falla va a spam.</li>
+    <li><code>p=reject</code> — lo que falla se rechaza directamente.</li>
+  </ul>
+  <p>Lo mío está en <code>quarantine</code> con alineamiento estricto, y con informes activados:</p>
+  <pre><code>v=DMARC1; p=quarantine; adkim=s; aspf=s; rua=mailto:...@adeodato.es; fo=1</code></pre>
+  <p>La forma correcta de avanzar es empezar en <code>none</code>, revisar los informes unas semanas para asegurarte de que no bloqueas nada legítimo, y subir después a <code>quarantine</code> y <code>reject</code>.</p>
+
+  <h2>Sin esto: el doble castigo</h2>
+  <p>Un dominio sin autenticación sufre lo peor de dos mundos: por un lado, <strong>cualquiera puede suplantarte</strong>; por otro, tus <strong>correos legítimos acaban en spam</strong>, porque los proveedores desconfían de lo que no está autenticado. Pierdes seguridad y entregabilidad a la vez.</p>
+
+  <h2>La web también: empieza por los cimientos</h2>
+  <p>La misma lógica aplica al sitio web: <strong>adeodato.es</strong> va por <strong>HTTPS</strong> y con el dominio bien configurado. La seguridad no es una capa que se añade al final, es el cimiento sobre el que se construye lo demás.</p>
+
+  <div class="lema">
+    <strong>Crear, no comprar.</strong> Nada de esto es un producto ni una licencia: son estándares abiertos y públicos que cualquiera puede implementar y auditar. Prefiero soluciones que entiendo y poseo, sin ataduras de proveedor.
+  </div>
+
+  <h2>La lección</h2>
+  <p>Autenticar el correo es de las medidas de mayor impacto y menor coste que existen: se configura una vez y protege para siempre contra un vector de ataque que sigue siendo el número uno. Lo apliqué primero en mi propia casa — <strong>predico con el ejemplo</strong> — porque la mejor forma de recomendar algo es haberlo hecho tú antes.</p>
+
+  <div class="cta">
+    <h2>¿Hablamos?</h2>
+    <p>Comparto lo que voy montando en seguridad. En <strong>Adeodato</strong> trabajo la ciberseguridad para PYME e industria en Lucena y comarca. Si te interesa el tema, escríbeme.</p>
+    <a href="/index.html#contacto">Contacto</a>
+  </div>
+
+  <hr>
+  <p class="back">Rafael Adiosdado Caballero Diéguez · Adeodato · Ciberseguridad IT/OT · <a href="/index.html">adeodato.es</a></p>
+</article>
+</body>
+</html>
