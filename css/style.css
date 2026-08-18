@@ -1099,15 +1099,21 @@ textarea {
 
 /* MOBILE MENU */
 @media (max-width: 768px) {
-  .hamburger { display: flex; }
+  .hamburger {
+    display: flex;
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
   .navbar-inner {
     height: auto;
     flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     padding-top: 0.6rem;
     padding-bottom: 0.6rem;
+    position: relative;
   }
   .nav-links {
     position: fixed;
