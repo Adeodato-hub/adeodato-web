@@ -59,7 +59,20 @@
   .menu a:hover{color:#fff;text-decoration:none}
   .menu a.cta{background:linear-gradient(180deg,var(--gold2),var(--gold));color:#3a2c07;padding:10px 18px;border-radius:9px;font-weight:700;box-shadow:0 4px 14px rgba(201,162,74,.35)}
   .menu a.cta:hover{filter:brightness(1.05)}
-  @media(max-width:860px){.menu a:not(.cta){display:none}}
+  .burger{display:none;background:none;border:none;color:#DDE6F2;font-size:1.7rem;cursor:pointer;line-height:1;padding:4px 10px}
+  .cta-m{display:none;background:linear-gradient(180deg,var(--gold2),var(--gold));color:#3a2c07;font-weight:700;border-radius:8px;text-decoration:none}
+  @media(max-width:860px){
+    .nav{position:relative;justify-content:center}
+    .burger{display:block;position:absolute;left:4px;top:50%;transform:translateY(-50%);font-size:1.6rem}
+    .brand{margin:0 auto}
+    .brand .tag{display:none}
+    .brand .logoimg{width:52px;height:46px}
+    .cta-m{display:inline-block;position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:8px 12px;font-size:.82rem}
+    .menu{display:none;position:absolute;top:74px;left:0;right:0;background:rgba(11,21,36,.98);backdrop-filter:blur(9px);flex-direction:column;align-items:stretch;padding:8px 20px 16px;border-bottom:1px solid var(--lineD)}
+    .menu.open{display:flex}
+    .menu a{margin:0;padding:13px 4px;border-bottom:1px solid var(--lineD);font-size:1.02rem}
+    .menu a.cta{display:none}
+  }
   .hero{position:relative;background:radial-gradient(900px 500px at 78% 15%,rgba(127,168,208,.20),transparent 60%),radial-gradient(700px 500px at 10% 90%,rgba(201,162,74,.16),transparent 55%),linear-gradient(160deg,#0B1524,#122744 60%,#0E2038);color:#EAF1FA;overflow:hidden}
   .hero::after{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);background-size:34px 34px;opacity:.5;pointer-events:none}
   .hero .wrap{position:relative;z-index:1;padding:74px 22px 66px;display:flex;gap:40px;align-items:center}
@@ -156,14 +169,16 @@
 
 <header>
   <div class="wrap nav">
+    <button class="burger" aria-label="Abrir menú" onclick="document.getElementById('mainmenu').classList.toggle('open')">☰</button>
     <a href="/" class="brand"><span class="logoimg" role="img" aria-label="Adeodato"></span><span class="tag">Ciberseguridad · Desarrollo</span></a>
-    <nav class="menu">
+    <nav class="menu" id="mainmenu" onclick="this.classList.remove('open')">
       <a href="#servicios">Servicios</a>
       <a href="#adeoshield">AdeoShield</a>
       <a href="#como">Cómo trabajo</a>
       <a href="/blog.html">Blog</a>
       <a class="cta" href="#contacto">Diagnóstico gratis</a>
     </nav>
+    <a class="cta-m" href="#contacto">Diagnóstico</a>
   </div>
 </header>
 
