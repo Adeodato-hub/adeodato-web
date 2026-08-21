@@ -66,12 +66,12 @@
   .hero .htext{flex:1.15}
   .hero .hlogo{flex:1;text-align:center}
   .hero .hlogo .logoimg{width:100%;max-width:340px;height:310px;margin:0 auto;filter:drop-shadow(0 18px 44px rgba(0,0,0,.55))}
+  .hbrand{display:none;font-family:Georgia,serif;font-size:2.7rem;color:var(--gold2);letter-spacing:1px;line-height:1;margin:0 0 10px}
   @media(max-width:860px){
     .hero .wrap{flex-direction:column;text-align:center}
     .hero .htext{flex:none}
-    .hero .hlogo{order:-1;flex:none}
-    .hero .hlogo .logoimg{max-width:210px;height:200px;margin:0 auto 6px}
-    .hero .btns{ }
+    .hero .hlogo{display:none}
+    .hbrand{display:block}
     .hero .kicker{margin-bottom:10px}
   }
   .hero .kicker{color:var(--gold2);font-weight:700;letter-spacing:2.5px;text-transform:uppercase;font-size:.78rem;margin-bottom:14px}
@@ -170,6 +170,7 @@
 <div class="hero">
   <div class="wrap">
     <div class="htext">
+      <div class="hbrand">ADEODATO</div>
       <div class="kicker">Ciberseguridad IT/OT · Desarrollo seguro · Lucena</div>
       <h1>Protege tu empresa de los ciberataques y consigue el <span class="gold">software</span> que necesita.</h1>
       <p class="sub">Vigilancia, respuesta y aplicaciones a medida para PYME e industria. Cercano, y con un principio innegociable: <b style="color:#fff">tu información no sale de tu empresa</b>.</p>
