@@ -347,7 +347,7 @@
     <h2>Cuéntanos qué necesitas</h2>
     <p class="lead">Escríbenos y recibirás un diagnóstico gratuito: revisamos tu exposición —o hablamos de la app o la web que tienes en mente— y te decimos por dónde empezar.</p>
     <div class="contactgrid">
-      <form action="https://formsubmit.co/adiosdado@adeodato.es" method="POST">
+      <form id="contact-form">
         <input type="hidden" name="_subject" value="Nuevo contacto desde adeodato.es">
         <input type="hidden" name="_captcha" value="true">
         <input type="hidden" name="_template" value="table">
@@ -356,7 +356,43 @@
         <input type="text" name="empresa" placeholder="Empresa (opcional)">
         <textarea name="mensaje" rows="4" placeholder="Cuéntame brevemente qué necesitas" required></textarea>
         <button type="submit">Enviar mensaje</button>
+        <div id="contact-status" style="margin-top:12px;font-size:0.9rem;min-height:1.2em"></div>
       </form>
+      <script>
+      (function () {
+        var form = document.getElementById('contact-form');
+        if (!form) return;
+        form.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          var btn = form.querySelector('button[type="submit"]');
+          var st = document.getElementById('contact-status');
+          st.textContent = 'Enviando...';
+          st.style.color = '#fff';
+          btn.disabled = true;
+          var data = Object.fromEntries(new FormData(form).entries());
+          try {
+            var res = await fetch('https://formsubmit.co/ajax/dc6aeaff88ffc0c231174afe0d91bc7a', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+              body: JSON.stringify(data)
+            });
+            var j = await res.json();
+            if (res.ok && j.success === 'true') {
+              st.textContent = 'Mensaje enviado. Te responderé personalmente.';
+              st.style.color = '#4ade80';
+              form.reset();
+            } else {
+              st.textContent = 'No se pudo enviar (puede ser un bloqueo temporal de red). Escríbeme directamente:';
+              st.style.color = '#f87171';
+            }
+          } catch (err) {
+            st.textContent = 'No se pudo enviar (puede ser un bloqueo temporal de red). Escríbeme directamente:';
+            st.style.color = '#f87171';
+          }
+          btn.disabled = false;
+        });
+      })();
+      </script>
       <div class="cinfo">
         <p>También puedes contactar directamente:</p>
         <p class="big">✉ <a href="mailto:adiosdado@adeodato.es">adiosdado@adeodato.es</a></p>
