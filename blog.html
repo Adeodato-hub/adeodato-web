@@ -547,6 +547,17 @@
           </button>
           <div id="contact-status" class="mono" style="margin-top: 0.9rem; font-size: 0.85rem; text-align: center; min-height: 1.1em;"></div>
         </form>
+
+        <!-- Respaldo de contacto directo: siempre visible, no solo si el envio falla -->
+        <div class="mono" style="margin-top: 1.3rem; padding-top: 1.2rem; border-top: 1px solid var(--glass-border); text-align: center; font-size: 0.9rem; color: var(--text-main);">
+          <p style="margin: 0 0 0.6rem; color: var(--text-muted, #8a94a6);">También puedes contactar directamente:</p>
+          <p style="margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; justify-content: center;">
+            <a href="mailto:adiosdado@adeodato.es" style="color: var(--primary-cyan);"><i class="fa-solid fa-envelope"></i> adiosdado@adeodato.es</a>
+            <a href="https://wa.me/34620553917" style="color: var(--primary-cyan);"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+            <a href="tel:+34620553917" style="color: var(--primary-cyan);"><i class="fa-solid fa-phone"></i> +34 620 553 917</a>
+          </p>
+        </div>
+
         <script>
         (function () {
           var form = document.getElementById('contact-form');
@@ -574,11 +585,11 @@
                 st.textContent = 'Falta activar el formulario: revisa el correo adiosdado@adeodato.es y pulsa "Activate Form" (también en spam).';
                 st.style.color = '#ffd166';
               } else {
-                st.textContent = 'Error al enviar. Inténtalo de nuevo o escríbeme a adiosdado@adeodato.es';
+                st.textContent = 'No se pudo enviar (puede ser un bloqueo temporal de red). Escríbeme directamente:';
                 st.style.color = '#ff6b6b';
               }
             } catch (err) {
-              st.textContent = 'No se pudo enviar. Escríbeme a adiosdado@adeodato.es';
+              st.textContent = 'No se pudo enviar (puede ser un bloqueo temporal de red). Escríbeme directamente:';
               st.style.color = '#ff6b6b';
             }
             btn.disabled = false;
